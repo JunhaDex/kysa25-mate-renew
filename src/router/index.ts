@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '@/pages/Home.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,12 +10,70 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/login',
+      name: 'login',
+      component: () => import('@/pages/Login.vue'),
+    },
+    {
+      path: '/group/',
+      children: [
+        {
+          path: '',
+          name: 'group-list',
+          component: () => import('@/pages/group/List.vue'),
+        },
+        {
+          path: ':id',
+          name: 'group-detail',
+          props: true,
+          component: () => import('@/pages/group/Detail.vue'),
+        },
+      ],
+    },
+    {
+      path: '/friend/',
+      children: [
+        {
+          path: '',
+          name: 'friend-list',
+          component: () => import('@/pages/friend/List.vue'),
+        },
+      ],
+    },
+    {
+      path: '/chat/',
+      children: [
+        {
+          path: '',
+          name: 'chat-list',
+          component: () => import('@/pages/chat/List.vue'),
+        },
+        {
+          path: ':id',
+          name: 'chat-detail',
+          props: true,
+          component: () => import('@/pages/chat/Room.vue'),
+        },
+      ],
+    },
+    {
+      path: '/user/profile',
+      name: 'user-profile',
+      component: () => import('@/pages/user/Profile.vue'),
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: () => import('@/pages/Error.vue'),
+    },
+    {
+      path: '/not-found',
+      name: 'not-found',
+      component: () => import('@/pages/Error.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: { name: 'not-found' },
     },
   ],
 })

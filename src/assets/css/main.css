@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import "./variables.css";
+@import "./base.css";
+
+html {
+  font-family: "Pretendard", sans-serif;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-background-2);
+  color: var(--color-tx-gray-1);
+  min-height: 100vh;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  max-width: 768px;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: var(--color-background-1);
+  box-shadow: rgba(0, 0, 0, 0.16) 0 0 8px;
+}
