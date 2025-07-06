@@ -1,5 +1,5 @@
 <template>
-  <main class="theme-dark">
+  <main class="theme-light">
     <div class="screen">
       <RouterView />
     </div>
