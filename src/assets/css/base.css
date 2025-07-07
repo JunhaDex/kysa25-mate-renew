@@ -20,7 +20,7 @@
   background-color: var(--color-background-1);
   border: 1px solid var(--color-border-default);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .s-input-wrap {
@@ -129,7 +129,9 @@
   }
 }
 
-.s-input-area {
+textarea {
+  resize: none;
+  overflow-y: hidden;
 }
 
 .s-btn {
@@ -142,7 +144,6 @@
   line-height: 1;
   border-radius: 0.5rem;
   font-weight: 600;
-  transition: all .15s ease-in-out;
   transform: translateY(0);
   /* default color */
   color: var(--color-white);
@@ -233,7 +234,6 @@
   }
 
   &.btn-outline {
-    padding: calc(.75rem - 2px) 1rem;
     color: var(--color-tx-gray-1);
     background-color: transparent;
     border: 2px solid var(--color-tx-gray-1);

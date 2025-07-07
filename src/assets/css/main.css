@@ -24,3 +24,11 @@ main {
   background-color: var(--color-background-1);
   box-shadow: rgba(0, 0, 0, 0.16) 0 0 8px;
 }
+
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+.screen::-webkit-scrollbar-thumb {
+  background: transparent;
+}
