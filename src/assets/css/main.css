@@ -13,6 +13,7 @@ main {
   background-color: var(--color-background-2);
   color: var(--color-tx-gray-1);
   min-height: 100vh;
+  transition: all 0.2s ease-in-out;
 }
 
 .screen {

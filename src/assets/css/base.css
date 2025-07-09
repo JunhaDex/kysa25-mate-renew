@@ -139,7 +139,7 @@ textarea {
   vertical-align: bottom;
   text-align: center;
   user-select: none;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   line-height: 1;
   border-radius: 0.5rem;
@@ -249,4 +249,85 @@ textarea {
       background-color: var(--color-background-3);
     }
   }
+}
+
+.switch {
+  --switch-width: 32px;
+  --switch-height: 20px;
+  --switch-padding: 2px; /* switch border width */
+  --switch-color-active: var(--color-tx-primary);
+  --switch-handle-size: calc(var(--switch-height) - (var(--switch-padding) * 2));
+  --switch-handle-translation: calc(var(--switch-width) - var(--switch-height));
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+
+  & input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* Switch track */
+
+  & .control {
+    position: relative;
+    display: inline-block;
+    width: var(--switch-width);
+    height: var(--switch-height);
+    background-color: var(--color-background-2);
+    border-radius: 9999px;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    /* Switch handle/thumb */
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: var(--switch-padding);
+      left: var(--switch-padding);
+      width: var(--switch-handle-size);
+      height: var(--switch-handle-size);
+      background-color: theme('colors.white');
+      border-radius: 50%;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+      transform: translateX(0); /* Reset initial position */
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform; /* Optimize animation performance */
+    }
+  }
+
+  /* Focus styles */
+
+  & input:focus ~ .control {
+    /* box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--switch-color-active); */
+    box-shadow: 0 0 0 0.25rem rgba(from var(--color-bg-primary) r g b / 0.75);
+  }
+
+  /* Checked state */
+
+  & input:checked ~ .control {
+    background-color: var(--switch-color-active);
+
+    &::after {
+      transform: translateX(var(--switch-handle-translation));
+    }
+  }
+}
+
+.s-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 7;
 }
