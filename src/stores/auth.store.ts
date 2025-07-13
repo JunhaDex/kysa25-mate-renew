@@ -9,8 +9,10 @@ export const useAuthStore = defineStore(
     }>({
       isDark: false,
     })
+    const token = ref<string>('')
     return {
       ui,
+      token
     }
   },
   { persist: true },

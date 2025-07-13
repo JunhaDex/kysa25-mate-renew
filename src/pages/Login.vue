@@ -5,6 +5,7 @@
         <label class="label title" for="loginUserId">아이디</label>
         <div class="s-input-box">
           <input
+            v-model="userLoginInput.id"
             class="s-input-field"
             id="loginUserId"
             type="text"
@@ -16,6 +17,7 @@
         <label class="label title" for="loginPassword">비밀번호</label>
         <div class="s-input-box">
           <input
+            v-model="userLoginInput.pwd"
             class="s-input-field"
             id="loginPassword"
             type="password"
@@ -23,7 +25,7 @@
           />
         </div>
       </div>
-      <button class="s-btn btn-primary w-full block">로그인</button>
+      <button class="s-btn btn-primary w-full block" @click="login">로그인</button>
     </div>
   </div>
   <div class="bg-background-2">
@@ -32,6 +34,26 @@
 </template>
 <script setup lang="ts">
 import Footer from '@/components/layouts/Footer.vue'
+import { AuthService } from '@/services/auth.service.ts'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const authSvc = new AuthService()
+const router = useRouter()
+const userLoginInput = ref<{
+  id: string
+  pwd: string
+}>({
+  id: '',
+  pwd: '',
+})
+
+async function login() {
+  await authSvc.login({
+    ...userLoginInput.value,
+  })
+  router.push('/')
+}
 </script>
 <style scoped>
 .login-layout {
