@@ -34,6 +34,10 @@ main {
   background: transparent;
 }
 
+.font-cursive {
+  font-family: "Dancing Script", cursive;
+}
+
 @keyframes skeleton-flow {
   0% {
     background-position: 200% 0;

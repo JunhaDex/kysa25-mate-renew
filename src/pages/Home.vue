@@ -37,7 +37,13 @@
     <div class="home-content s-safe-area mb-4">
       <h1 class="text-lg font-bold mb-2">환영사</h1>
       <div class="s-card">
-        <p>환영합니다 환영합니다 환영합니다</p>
+        <div class="flex justify-center mb-4">
+          <div class="profile-wrap">
+            <div class="profile-image"></div>
+            <span class="inline-block mt-2">대회장 부부</span>
+          </div>
+        </div>
+        <p class="text-center">환영합니다 환영합니다 환영합니다</p>
       </div>
     </div>
     <div class="home-content s-safe-area mb-4">
@@ -80,5 +86,18 @@ import Footer from '@/components/layouts/Footer.vue'
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.profile-wrap {
+  display: inline-block;
+  text-align: center;
+
+  & .profile-image {
+    background-color: var(--color-background-2);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto;
+  }
 }
 </style>
