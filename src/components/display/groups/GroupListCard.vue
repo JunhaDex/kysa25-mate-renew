@@ -2,16 +2,16 @@
   <div class="s-card">
     <div class="group-card">
       <div class="group-image">
-        <img :src="group.coverImg" alt="동아리 이미지" />
+        <img :src="group.profileImg" alt="동아리 이미지" />
       </div>
       <div class="group-info flex-1">
         <div class="group-title">
           <h3 class="text-lg font-bold">{{ group.groupName }}</h3>
-          <p class="text-shadow-tx-gray-3">동아리 소개: ...</p>
+          <p class="text-tx-gray-3 text-wrap">{{ group.introduce }}</p>
         </div>
-        <div class="group-stats">
+        <div class="group-stats text-border-active mt-2">
           <Users :size="14" />
-          <span class="text-xs text-shadow-tx-gray-3">가입자 수: 10명</span>
+          <span class="text-xs">가입자 수: {{ group.followers }}명</span>
         </div>
       </div>
     </div>
@@ -36,14 +36,23 @@ const props = defineProps<{
 .group-image {
   background-color: var(--color-background-2);
   border-radius: 0.5rem;
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   aspect-ratio: 1;
+  overflow: hidden;
 }
 
 .group-stats {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.text-wrap {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 48px;
 }
 </style>
