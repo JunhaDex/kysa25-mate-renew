@@ -30,7 +30,7 @@
 
 .user-profile {
   background-color: var(--color-background-2);
-  border-radius: 0.5rem;
+  border-radius: 50%;
   width: 48px;
   height: 48px;
   aspect-ratio: 1;

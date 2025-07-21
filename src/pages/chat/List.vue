@@ -12,5 +12,21 @@
 import Header from '@/components/layouts/Header.vue'
 import ChatListCard from '@/components/display/chat/ChatListCard.vue'
 import Footer from '@/components/layouts/Footer.vue'
+import { onMounted } from 'vue'
+import { ChatService } from '@/services/chat.service.ts'
+
+const chatSvc = new ChatService()
+
+onMounted(async () => {
+  await fetchChatList()
+})
+
+async function fetchChatList() {
+  await chatSvc.listChats()
+}
 </script>
-<style scoped></style>
+<style scoped>
+.section-list {
+  min-height: calc(100vh - 112px);
+}
+</style>
