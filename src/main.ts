@@ -5,9 +5,13 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 
+dayjs.extend(customParseFormat)
 const app = createApp(App)
 const pinia = createPinia()
+
 pinia.use(createPersistedState())
 app.use(pinia)
 app.use(router)

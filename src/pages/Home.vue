@@ -35,21 +35,40 @@
   </section>
   <section class="section-schedule bg-background-2 py-4">
     <div class="home-content s-safe-area mb-4">
-      <h1 class="text-lg font-bold mb-2">환영사</h1>
+      <h1 class="text-lg font-bold mb-2">일자별 주제</h1>
       <div class="s-card">
-        <div class="flex justify-center mb-4">
-          <div class="profile-wrap">
-            <div class="profile-image"></div>
-            <span class="inline-block mt-2">대회장 부부</span>
-          </div>
-        </div>
-        <p class="text-center">환영합니다 환영합니다 환영합니다</p>
+        foo
       </div>
     </div>
     <div class="home-content s-safe-area mb-4">
       <h1 class="text-lg font-bold mb-2">대회 일정</h1>
       <div class="s-card">
-        <p>환영합니다 환영합니다 환영합니다</p>
+        <div class="timetable-grid">
+          <div></div>
+          <div class="day-label">
+            <span class="text-xs font-semibold">8/14 목</span>
+          </div>
+          <div class="day-label">
+            <span class="text-xs font-semibold">8/15 금</span>
+          </div>
+          <div class="day-label">
+            <span class="text-xs font-semibold">8/16 토</span>
+          </div>
+          <div class="day-label">
+            <span class="text-xs font-semibold">8/17 일</span>
+          </div>
+
+          <template v-for="idx in timeDiff" :key="idx">
+            <div class="time-label">
+              <span class="text-xs font-semibold text-nowrap">{{
+                dayjs(timetable.timeframe.start, 'HH:mm')
+                  .add(idx - 1, 'hour')
+                  .format('h:mm A')
+              }}</span>
+            </div>
+            <div v-for="dd in 4" :key="`${dd}.${idx}`" class="grid-slot"></div>
+          </template>
+        </div>
       </div>
     </div>
   </section>
@@ -60,6 +79,26 @@
 <script lang="ts" setup>
 import Header from '@/components/layouts/Header.vue'
 import Footer from '@/components/layouts/Footer.vue'
+import { computed, ref } from 'vue'
+import dayjs from 'dayjs'
+
+const timetable = ref<{
+  timeframe: {
+    start: string
+    end: string
+  }
+}>({
+  timeframe: {
+    start: '09:00',
+    end: '23:00',
+  },
+})
+const timeDiff = computed<number>(() => {
+  const start = dayjs(timetable.value.timeframe.start, 'HH:mm')
+  const end = dayjs(timetable.value.timeframe.end, 'HH:mm')
+  console.log(start, end)
+  return end.diff(start, 'hour') + 1
+})
 </script>
 <style scoped>
 .home-hero {
@@ -98,6 +137,34 @@ import Footer from '@/components/layouts/Footer.vue'
     height: 64px;
     border-radius: 50%;
     margin: 0 auto;
+  }
+}
+
+.timetable-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 60px repeat(4, 1fr);
+  gap: 4px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+
+  & .time-label,
+  & .day-label {
+    text-align: center;
+    padding: 5px;
+  }
+
+  & .day-label {
+    font-weight: bold;
+  }
+
+  & .grid-slot {
+    position: relative;
+    background-color: var(--color-background-2);
+    height: 50px;
+    transition: background-color 0.15s ease-in-out;
+    border-radius: 0.5rem;
   }
 }
 </style>
