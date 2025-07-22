@@ -1,20 +1,31 @@
 <template>
   <div class="s-card">
-    <div class="chat-list-item">
+    <div class="chat-list-item" @click="router.push(`/chat/${room.ref}`)">
       <div class="user-profile"></div>
       <div class="sender-info flex-1">
         <div class="name-time">
-          <h3 class="font-bold">보낸사람</h3>
-          <span class="text-xs text-shadow-tx-gray-3">오후 3:30</span>
+          <h3 class="font-bold">{{ room.title }}</h3>
+          <span class="text-xs text-shadow-tx-gray-3">{{ tts }}</span>
         </div>
         <div class="message-preview">
-          <p class="text-sm text-shadow-tx-gray-2">메시지 내용이 여기에 표시됩니다...</p>
+          <p class="text-sm text-shadow-tx-gray-2">{{ room.lastChat.message }}</p>
         </div>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { ChatRoom } from '@/types/chat.type.ts'
+import { computed } from 'vue'
+import { timeToStr } from '@/utils/use.util.ts'
+import { useRouter } from 'vue-router'
+
+const props = defineProps<{
+  room: ChatRoom
+}>()
+const router = useRouter()
+const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
+</script>
 <style scoped>
 .chat-list-item {
   display: flex;

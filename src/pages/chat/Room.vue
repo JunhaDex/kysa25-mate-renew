@@ -22,6 +22,22 @@
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
 import ChatBubble from '@/components/display/chat/ChatBubble.vue'
+import { onMounted, ref } from 'vue'
+import { ChatService } from '@/services/chat.service.ts'
+import type { Chat } from '@/types/chat.type.ts'
+
+const props = defineProps<{
+  id: string
+}>()
+const chatSvc = new ChatService()
+const chatList = ref<Chat[]>([])
+onMounted(async () => {
+  await fetchChatMessages()
+})
+
+async function fetchChatMessages() {
+  await chatSvc.getChatRoom(props.id)
+}
 
 function adjustInputHeight(e: Event) {
   const input = e.target as HTMLTextAreaElement

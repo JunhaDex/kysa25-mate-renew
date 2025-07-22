@@ -2,7 +2,8 @@
   <Header />
   <section class="section-list bg-background-2 p-4">
     <h2 class="text-lg font-semibold mb-2">최근 메세지</h2>
-    <ChatListCard />
+    <ChatListCard v-for="(room, index) in roomList" :key="index" :room="room" class="mb-4" />
+    <ScrollObserver @load-more="fetchNext" />
   </section>
   <div class="bg-background-2">
     <Footer />
@@ -12,17 +13,41 @@
 import Header from '@/components/layouts/Header.vue'
 import ChatListCard from '@/components/display/chat/ChatListCard.vue'
 import Footer from '@/components/layouts/Footer.vue'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ChatService } from '@/services/chat.service.ts'
+import type { ChatRoom } from '@/types/chat.type.ts'
+import { usePagination } from '@/compositions/pages.comp.ts'
+import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 
 const chatSvc = new ChatService()
+const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
+const roomList = ref<ChatRoom[]>([])
 
 onMounted(async () => {
   await fetchChatList()
 })
 
 async function fetchChatList() {
-  await chatSvc.listChats()
+  roomList.value = await fetchListData(
+    chatSvc.listChats({
+      page: {
+        page: pageInfo.value.pageNo,
+        size: pageInfo.value.pageSize,
+      },
+    }),
+  )
+}
+
+async function fetchNext() {
+  const list = await fetchListData(
+    chatSvc.listChats({
+      page: {
+        page: pageInfo.value.pageNo + 1,
+        size: pageInfo.value.pageSize,
+      },
+    }),
+  )
+  roomList.value.push(...list)
 }
 </script>
 <style scoped>
