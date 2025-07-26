@@ -1,12 +1,15 @@
 <template>
   <div class="side-menu" :class="{ open: isOpen }">
     <div class="menu-content">
-      <div class="menu-top-place">logo</div>
+      <div class="menu-top-place">
+        <div class="brand-logo">
+          <img src="@/assets/images/logo_mate.png" alt="app-logo" />
+        </div>
+      </div>
       <div class="menu-user-profile">
         <div class="profile-image"></div>
         <div class="profile-info">
           <h3 class="text-lg font-bold">사용자 이름</h3>
-          <p class="text-sm text-shadow-tx-gray-3">사용자 소개: ...</p>
         </div>
         <!--        <button class="s-btn btn-secondary">내 설정</button>-->
         <UserRoundCog :size="24" />
@@ -134,7 +137,7 @@ async function goMenu(path: string) {
 
   & .profile-image {
     background-color: var(--color-background-2);
-    border-radius: 0.5rem;
+    border-radius: 50%;
     width: 48px;
     height: 48px;
     aspect-ratio: 1;

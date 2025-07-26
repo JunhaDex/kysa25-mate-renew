@@ -16,6 +16,12 @@ main {
   transition: all 0.2s ease-in-out;
 }
 
+.brand-logo {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1;
+}
+
 .no-result {
   width: 100%;
   height: 300px;

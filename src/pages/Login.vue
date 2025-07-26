@@ -1,6 +1,13 @@
 <template>
   <div class="s-safe-area login-layout bg-background-2">
+    <img class="bg-img" src="@/assets/images/login_bg.jpg" alt="background" />
     <div class="s-card login-card">
+      <div class="mb-6 flex items-center">
+        <div class="brand-logo mr-2">
+          <img src="@/assets/images/logo_mate.png" alt="app-logo" />
+        </div>
+        <h1 class="leading-[24px] text-lg font-bold text-center">Mate 로그인</h1>
+      </div>
       <div class="s-input-wrap mb-4">
         <label class="label title" for="loginUserId">아이디</label>
         <div class="s-input-box">
@@ -57,7 +64,16 @@ async function login() {
 </script>
 <style scoped>
 .login-layout {
+  position: relative;
   height: calc(100% - 57px);
+}
+
+.bg-img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
 }
 
 .login-card {

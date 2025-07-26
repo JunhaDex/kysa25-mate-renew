@@ -1,6 +1,10 @@
 <template>
   <header class="s-header">
-    <div class="header-left">logo</div>
+    <div class="header-left">
+      <div class="brand-logo">
+        <img src="@/assets/images/logo_mate.png" alt="app-logo" />
+      </div>
+    </div>
     <div class="header-right">
       <template v-if="hasAuth">
         <Bell :size="24" />
@@ -36,6 +40,11 @@ const router = useRouter()
   align-items: center;
   padding: 1rem;
   background-color: var(--color-background-1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
 }
 
 .header-right {

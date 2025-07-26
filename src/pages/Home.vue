@@ -2,7 +2,9 @@
   <Header />
   <section class="section-intro">
     <div class="home-hero">
-      <div class="hero-image"></div>
+      <div class="hero-image">
+        <img src="@/assets/images/hero_main.png" alt="main-hero" />
+      </div>
       <div class="hero-title">
         <h2 class="text-2xl sm:text-3xl font-bold mb-4">신입생 여러분을 환영합니다!</h2>
         <p class="mb-2">3박 4일의 청년대회 함께 즐겨요~</p>
@@ -12,10 +14,30 @@
     <div class="home-about s-safe-area my-4">
       <h1 class="text-lg font-bold mb-2">바로가기</h1>
       <div class="flex justify-center items-center gap-4">
-        <a href="/schedule" class="s-btn btn-secondary">대회 일정</a>
-        <a href="/schedule" class="s-btn btn-secondary">동아리방</a>
-        <a href="/notice" class="s-btn btn-secondary">셔틀버스</a>
-        <a href="/faq" class="s-btn btn-secondary">대회 필독</a>
+        <a href="#">
+          <div class="tray-item">
+            <CalendarDays :size="36" />
+            <span class="text-sm font-semibold text-nowrap">대회일정</span>
+          </div>
+        </a>
+        <a href="#">
+          <div class="tray-item">
+            <Blocks :size="36" />
+            <span class="text-sm font-semibold text-nowrap">동아리방</span>
+          </div>
+        </a>
+        <a href="#">
+          <div class="tray-item">
+            <BusFront :size="36" />
+            <span class="text-sm font-semibold text-nowrap">셔틀버스</span>
+          </div>
+        </a>
+        <a href="#">
+          <div class="tray-item">
+            <BadgeInfo :size="36" />
+            <span class="text-sm font-semibold text-nowrap">필독사항</span>
+          </div>
+        </a>
       </div>
     </div>
     <div class="home-message s-safe-area mb-4">
@@ -25,11 +47,16 @@
         <p class="font-semibold mb-2">2025 그리스도에게로 나아옴 101</p>
         <p class="text-sm text-shadow-tx-gray-3">강의 소개: ...</p>
       </div>
-      <div class="banner bg-bg-primary p-4 rounded-lg">
-        <h3 class="text-lg font-bold mb-2 text-tx-primary">주제 성구</h3>
-        <p class="text-sm text-shadow-tx-gray-3">
-          "너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라"
-        </p>
+      <div class="banner">
+        <div class="left">
+          <img src="@/assets/images/ad_script.png" alt="banner" />
+        </div>
+        <div class="right">
+          <h3 class="text-lg font-bold mb-2 text-tx-primary">주제 성구 - 교성 88:63</h3>
+          <p class="text-sm text-shadow-tx-gray-3">
+            "너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라"
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -37,7 +64,18 @@
     <div class="home-content s-safe-area mb-4">
       <h1 class="text-lg font-bold mb-2">일자별 주제</h1>
       <div class="s-card">
-        foo
+        <ul>
+          <li>첫째날(8/14): '오라' 청년대회에 온 것을 환영하며, 주님께 함께 가까이 가기.</li>
+          <li>
+            둘째날(8/15): '찾으라' 하나님의 자녀라는 정체성을 가지고 그 정체성을 공유하는 친구들과
+            즐거움을 찾기.
+          </li>
+          <li>
+            셋째날(8/16): '구하라' 주님과 성약을 맺고, 이 생을 살아갈 힘과 소망하는 것들을 얻을 힘을
+            구하기
+          </li>
+          <li>넷째날(8/17): '두드리라' 간증을 가지고 앞으로 나아가기.</li>
+        </ul>
       </div>
     </div>
     <div class="home-content s-safe-area mb-4">
@@ -80,6 +118,7 @@
 import Header from '@/components/layouts/Header.vue'
 import Footer from '@/components/layouts/Footer.vue'
 import { computed, ref } from 'vue'
+import { CalendarDays, Blocks, BusFront, BadgeInfo } from 'lucide-vue-next'
 import dayjs from 'dayjs'
 
 const timetable = ref<{
@@ -106,12 +145,24 @@ const timeDiff = computed<number>(() => {
 }
 
 .hero-image {
+  position: relative;
   background-color: var(--color-background-2);
   width: 100%;
   aspect-ratio: 1;
+  overflow: hidden;
 
   @media (min-width: 640px) {
     aspect-ratio: 4 / 3;
+  }
+
+  & img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    height: 100%;
+    max-width: none;
+    transform: translateX(-50%);
   }
 }
 
@@ -125,6 +176,47 @@ const timeDiff = computed<number>(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.tray-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.banner {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  background-color: var(--color-bg-primary);
+  border-radius: 0.75rem;
+  padding: 1rem;
+
+  & .left {
+    position: relative;
+    display: inline-block;
+    width: 176px;
+    max-width: 28%;
+    height: 112px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--color-bg-secondary);
+
+    & img {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 100%;
+      max-width: none;
+    }
+  }
+
+  & .right {
+    flex: 1;
+  }
 }
 
 .profile-wrap {
