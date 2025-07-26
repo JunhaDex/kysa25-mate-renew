@@ -82,7 +82,9 @@
       <h1 class="text-lg font-bold mb-2">대회 일정</h1>
       <div class="s-card">
         <div class="timetable-grid">
-          <div></div>
+          <div>
+            <!--Empty cell for grid alignment-->
+          </div>
           <div class="day-label">
             <span class="text-xs font-semibold">8/14 목</span>
           </div>
@@ -101,11 +103,23 @@
               <span class="text-xs font-semibold text-nowrap">{{
                 dayjs(timetable.timeframe.start, 'HH:mm')
                   .add(idx - 1, 'hour')
-                  .format('h:mm A')
+                  .format('h A')
               }}</span>
             </div>
             <div v-for="dd in 4" :key="`${dd}.${idx}`" class="grid-slot"></div>
           </template>
+          <div
+            v-for="(event, idx) in eventList"
+            :key="`e${idx}`"
+            class="time-box"
+            :style="event.style"
+          >
+            <div class="text-[10px] leading-[10px] font-medium text-tx-gray-3 mb-1">
+              {{ dayjs(event.begin, 'HH:mm').format('h:mm A') }} -
+              {{ dayjs(event.end, 'HH:mm').format('h:mm A') }}
+            </div>
+            <span class="title">{{ event.title }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -120,6 +134,7 @@ import Footer from '@/components/layouts/Footer.vue'
 import { computed, ref } from 'vue'
 import { CalendarDays, Blocks, BusFront, BadgeInfo } from 'lucide-vue-next'
 import dayjs from 'dayjs'
+import scheduleData from '@/assets/statics/schedule.json'
 
 const timetable = ref<{
   timeframe: {
@@ -128,8 +143,8 @@ const timetable = ref<{
   }
 }>({
   timeframe: {
-    start: '09:00',
-    end: '23:00',
+    start: '07:00',
+    end: '22:00',
   },
 })
 const timeDiff = computed<number>(() => {
@@ -137,6 +152,50 @@ const timeDiff = computed<number>(() => {
   const end = dayjs(timetable.value.timeframe.end, 'HH:mm')
   console.log(start, end)
   return end.diff(start, 'hour') + 1
+})
+const eventList = computed<
+  {
+    begin: string
+    end: string
+    title: string
+    color: string
+    style: any
+  }[]
+>(() => {
+  const gridStart = dayjs(timetable.value.timeframe.start, 'HH:mm').hour() * 60
+  const gridHeight = 50
+  const gridGap = 4
+  const topOffset = (gridHeight + gridGap) / 60
+  const events: {
+    begin: string
+    end: string
+    title: string
+    color: string
+    style: any
+  }[] = []
+  let gridCol = 0
+  const keys = Object.keys(scheduleData) as (keyof typeof scheduleData)[]
+  for (const key of keys) {
+    gridCol++
+    scheduleData[key].forEach((event: any) => {
+      const begin = dayjs(event.begin, 'HH:mm')
+      const end = dayjs(event.end, 'HH:mm')
+      const eventStart = begin.hour() * 60 + begin.minute()
+      const duration = end.diff(begin, 'minute')
+      const top = (eventStart - gridStart) * topOffset
+      const height = duration * topOffset - gridGap
+      events.push({
+        ...event,
+        style: {
+          top: `${top + 36}px`,
+          height: `${height}px`,
+          backgroundColor: event.color,
+          gridColumn: `${gridCol + 1} / span 1`,
+        },
+      })
+    })
+  }
+  return events
 })
 </script>
 <style scoped>
@@ -235,7 +294,7 @@ const timeDiff = computed<number>(() => {
 .timetable-grid {
   position: relative;
   display: grid;
-  grid-template-columns: 60px repeat(4, 1fr);
+  grid-template-columns: 48px repeat(4, 1fr);
   gap: 4px;
   width: 100%;
   max-width: 500px;
@@ -253,10 +312,25 @@ const timeDiff = computed<number>(() => {
 
   & .grid-slot {
     position: relative;
-    background-color: var(--color-background-2);
+    border: 1px solid var(--color-border-default);
     height: 50px;
     transition: background-color 0.15s ease-in-out;
     border-radius: 0.5rem;
+  }
+}
+
+.time-box {
+  position: absolute;
+  border-radius: 0.5rem;
+  padding: 0.3rem;
+  overflow: hidden;
+  width: 100%;
+  min-height: 56px;
+  text-wrap: pretty;
+  line-height: 1;
+
+  & .title {
+    font-size: var(--text-sm);
   }
 }
 </style>

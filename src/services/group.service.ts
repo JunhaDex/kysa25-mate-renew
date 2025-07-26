@@ -9,6 +9,7 @@ export class GroupService extends ApiService {
     ref: 'ref',
     groupName: 'groupName',
     profileImg: 'profileImg',
+    coverImg: 'coverImg',
     introduce: 'introduce',
     isShow: 'isShow',
     priority: 'priority',
@@ -55,4 +56,15 @@ export class GroupService extends ApiService {
   //   const groups = this.unpackRes(res) as Group[]
   //   return groups.map((group) => this.cleanGroup(group))
   // }
+
+  async getGroupByRef(ref: string): Promise<Group> {
+    const res = await this.setAuth().get(`/${ref}`)
+    const raw = this.unpackRes(res) as any
+    const group = cleanObj<Group>(raw, this.groupKeyMapping)
+    group.creator = {
+      ref: raw.creatorRef,
+      nickname: raw.creatorNickname,
+    }
+    return group
+  }
 }

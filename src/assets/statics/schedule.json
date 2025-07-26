@@ -4,31 +4,31 @@
       "begin": "13:00",
       "end": "15:00",
       "title": "입학식",
-      "color": "#FF5733"
+      "color": "var(--color-bg-primary)"
     },
     {
       "begin": "15:00",
       "end": "17:00",
       "title": "같이의 가치학",
-      "color": "#33FF57"
+      "color": "var(--color-bg-green)"
     },
     {
       "begin": "17:00",
       "end": "19:00",
       "title": "저녁식사",
-      "color": "#3357FF"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "19:00",
       "end": "20:30",
       "title": "오리엔테이션",
-      "color": "#FF33A1"
+      "color": "var(--color-bg-primary)"
     },
     {
       "begin": "20:30",
       "end": "21:00",
       "title": "시상식",
-      "color": "#A133FF"
+      "color": "var(--color-bg-purple)"
     }
   ],
   "d2": [
@@ -36,49 +36,49 @@
       "begin": "07:00",
       "end": "09:00",
       "title": "하루열기",
-      "color": "#FF8C33"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "09:00",
       "end": "10:00",
       "title": "디보셔널",
-      "color": "#33FF8C"
+      "color": "var(--color-bg-green)"
     },
     {
       "begin": "10:00",
       "end": "12:00",
       "title": "동아리 활동",
-      "color": "#8C33FF"
+      "color": "var(--color-bg-primary)"
     },
     {
       "begin": "12:00",
       "end": "14:00",
       "title": "점심식사",
-      "color": "#FF3333"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "14:00",
       "end": "17:00",
       "title": "연애 결혼, 그리고 우리",
-      "color": "#33A1FF"
+      "color": "var(--color-bg-red)"
     },
     {
       "begin": "17:00",
       "end": "19:00",
       "title": "저녁식사",
-      "color": "#A1FF33"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "19:00",
       "end": "21:00",
       "title": "찾아보Show",
-      "color": "#FF33A1"
+      "color": "var(--color-bg-red)"
     },
     {
       "begin": "21:00",
       "end": "23:00",
       "title": "축제",
-      "color": "#A133FF"
+      "color": "var(--color-bg-purple)"
     }
   ],
   "d3": [
@@ -86,43 +86,43 @@
       "begin": "07:00",
       "end": "09:00",
       "title": "하루열기",
-      "color": "#FF5733"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "09:00",
       "end": "12:00",
       "title": "KYSA 아레나",
-      "color": "#33FF57"
+      "color": "var(--color-bg-red)"
     },
     {
       "begin": "12:00",
       "end": "14:00",
       "title": "점심식사",
-      "color": "#FF33A1"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "14:00",
       "end": "17:00",
       "title": "영적 세미나",
-      "color": "#A133FF"
+      "color": "var(--color-bg-green)"
     },
     {
       "begin": "17:00",
       "end": "19:00",
       "title": "저녁식사",
-      "color": "#FF8C33"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "19:00",
       "end": "21:00",
       "title": "무도회",
-      "color": "#33FF8C"
+      "color": "var(--color-bg-amber)"
     },
     {
       "begin": "21:00",
       "end": "23:00",
       "title": "축제",
-      "color": "#8C33FF"
+      "color": "var(--color-bg-purple)"
     }
   ],
   "d4": [
@@ -130,19 +130,19 @@
       "begin": "07:30",
       "end": "09:30",
       "title": "하루열기",
-      "color": "#FF5733"
+      "color": "var(--color-background-3)"
     },
     {
       "begin": "09:30",
       "end": "10:30",
       "title": "간증모임",
-      "color": "#33FF57"
+      "color": "var(--color-bg-amber)"
     },
     {
       "begin": "11:00",
       "end": "12:00",
       "title": "디보셔널",
-      "color": "#FF33A1"
+      "color": "var(--color-bg-green)"
     }
   ]
 }

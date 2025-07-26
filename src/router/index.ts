@@ -23,6 +23,11 @@ const router = createRouter({
           component: () => import('@/pages/group/List.vue'),
         },
         {
+          path: 'new',
+          name: 'group-new',
+          component: () => import('@/pages/group/New.vue'),
+        },
+        {
           path: ':id',
           name: 'group-detail',
           props: true,

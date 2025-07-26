@@ -1,4 +1,4 @@
-import type {Mention} from "@/types/common.type.ts";
+import type { Mention } from '@/types/common.type.ts'
 
 export interface Group {
   id: number
@@ -15,4 +15,15 @@ export interface Group {
   already?: boolean
 }
 
-export interface Post {}
+export interface Post {
+  id: number
+  author: Mention
+  team: Team
+  image: string | null
+  content: string
+  createdAt: string
+  likes: number
+  comments: number
+}
+
+export interface Team {}

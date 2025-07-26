@@ -108,10 +108,11 @@ async function goMenu(path: string) {
 </script>
 <style scoped>
 .side-menu {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 55%;
+  max-width: 270px;
   height: 100%;
   z-index: 10;
   border-radius: 0 0.75rem 0.75rem 0;

@@ -25,6 +25,7 @@ export interface AuthLogin {
 export interface Mention {
   ref: string
   nickname: string
+  profileImg?: string
 }
 
 export type SkeletonUIType = 'list-card'

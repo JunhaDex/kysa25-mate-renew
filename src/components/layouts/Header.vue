@@ -1,9 +1,11 @@
 <template>
   <header class="s-header">
     <div class="header-left">
-      <div class="brand-logo">
+      <ArrowLeft v-if="hasBack" :size="24" color="var(--color-tx-gray-3)" @click="router.back()" />
+      <div v-else class="brand-logo">
         <img src="@/assets/images/logo_mate.png" alt="app-logo" />
       </div>
+      <h1 v-if="title" class="text-lg font-bold leading-[24px] ml-4">{{ title }}</h1>
     </div>
     <div class="header-right">
       <template v-if="hasAuth">
@@ -21,9 +23,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Bell, Menu } from 'lucide-vue-next'
+import { Bell, Menu, ArrowLeft } from 'lucide-vue-next'
 import SideMenu from '@/components/display/SideMenu.vue'
 
+const props = defineProps<{
+  hasBack?: boolean
+  title?: string
+}>()
 const hasAuth = ref(true)
 const isMenuOpen = ref(false)
 const router = useRouter()

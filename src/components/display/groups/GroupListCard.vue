@@ -1,6 +1,6 @@
 <template>
   <div class="s-card">
-    <div class="group-card">
+    <div class="group-card" @click="router.push(`group/${group.ref}`)">
       <div class="group-image">
         <img :src="group.profileImg" alt="동아리 이미지" />
       </div>
@@ -20,10 +20,12 @@
 <script lang="ts" setup>
 import { Users } from 'lucide-vue-next'
 import type { Group } from '@/types/group.type.ts'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   group: Group
 }>()
+const router = useRouter()
 </script>
 <style scoped>
 .group-card {
