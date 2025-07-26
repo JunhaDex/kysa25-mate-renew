@@ -14,3 +14,5 @@ export interface Group {
   followers: number
   already?: boolean
 }
+
+export interface Post {}

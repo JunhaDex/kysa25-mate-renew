@@ -71,13 +71,24 @@
 <script lang="ts" setup>
 import { Home, Send, Users, HeartHandshake, UserRoundCog, Sun, Moon, LogOut } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth.store.ts'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { sleep } from '@/utils/use.util.ts'
 
 const props = defineProps<{
   isOpen: boolean
 }>()
+watch(
+  () => props.isOpen,
+  (changed) => {
+    const container = document.getElementById('AppContainer')
+    if (changed) {
+      container?.classList.add('no-scroll')
+    } else {
+      container?.classList.remove('no-scroll')
+    }
+  },
+)
 const emit = defineEmits(['close'])
 const router = useRouter()
 const authStore = useAuthStore()

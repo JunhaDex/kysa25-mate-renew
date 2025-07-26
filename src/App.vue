@@ -1,6 +1,6 @@
 <template>
   <main :class="authStore.ui.isDark ? 'theme-dark' : 'theme-light'">
-    <div class="screen">
+    <div class="screen" id="AppContainer">
       <RouterView />
     </div>
   </main>
