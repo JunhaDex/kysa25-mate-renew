@@ -13,9 +13,13 @@
       <p>{{ post.content }}</p>
     </div>
     <div class="action-wrap pb-4">
-      <button class="action-icon">
-        <Heart :size="16" />
-        <span class="count">{{ post.likes }}</span>
+      <button class="action-icon" @click="toggleLike">
+        <Heart
+          :size="16"
+          :fill="likeState.isLiked ? `var(--color-tx-red)` : 'transparent'"
+          :color="likeState.isLiked ? 'var(--color-tx-red)' : 'var(--color-tx-gray-1)'"
+        />
+        <span class="count">{{ likeState.count }}</span>
       </button>
       <button class="action-icon">
         <MessageCircleMore :size="16" />
@@ -27,13 +31,29 @@
 <script setup lang="ts">
 import { Heart, MessageCircleMore } from 'lucide-vue-next'
 import type { Post } from '@/types/group.type.ts'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { timeToStr } from '@/utils/use.util.ts'
+import { PostService } from '@/services/post.service.ts'
 
 const props = defineProps<{
   post: Post
 }>()
+const postSvc = new PostService()
+const likeState = ref<{ count: number; isLiked: boolean }>({
+  count: props.post.likes,
+  isLiked: props.post.isLiked,
+})
 const timeStr = computed(() => timeToStr(props.post.createdAt))
+
+async function toggleLike() {
+  likeState.value.isLiked = !likeState.value.isLiked
+  if (likeState.value.isLiked) {
+    likeState.value.count += 1
+  } else {
+    likeState.value.count -= 1
+  }
+  await postSvc.likePost(props.post.id, likeState.value.isLiked)
+}
 </script>
 <style scoped>
 .group-post {

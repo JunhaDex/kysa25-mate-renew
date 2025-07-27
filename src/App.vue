@@ -3,6 +3,9 @@
     <div class="screen" id="AppContainer">
       <RouterView />
     </div>
+    <sub>
+
+    </sub>
   </main>
 </template>
 <script lang="ts" setup>

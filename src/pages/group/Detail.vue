@@ -33,10 +33,10 @@
     <button
       class="s-btn btn-primary btn-cta-round"
       :class="{ expand: isExpandBtn }"
-      @click="router.push('/group/new')"
+      @click="router.push(`/group/${id}/new`)"
     >
       <Plus :size="20" class="inline-block" />
-      <span v-if="isExpandBtn" class="leading-[20px] ml-2 text-nowrap">글 작성</span>
+      <span v-if="isExpandBtn" class="leading-[20px] ml-2 text-nowrap">글작성</span>
     </button>
   </template>
 </template>
@@ -96,7 +96,6 @@ async function fetchGroupDetail() {
     }),
   )
 }
-
 </script>
 <style scoped>
 .group-header {

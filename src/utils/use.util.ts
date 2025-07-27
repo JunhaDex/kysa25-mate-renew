@@ -52,3 +52,26 @@ export function timeToStr(time: string): string {
     return formatUnit(years, '년')
   }
 }
+
+export async function convertBlobToBase64(blob: Blob): Promise<string> {
+  const reader = new FileReader()
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve(reader.result)
+      } else {
+        reject(new Error('Failed to convert Blob to Base64'))
+      }
+    }
+    reader.readAsDataURL(blob)
+  })
+}
+
+export function genRandStr(len: number) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < len; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}

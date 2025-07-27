@@ -24,6 +24,7 @@ export interface Post {
   createdAt: string
   likes: number
   comments: number
+  isLiked: boolean
 }
 
 export interface Team {}
