@@ -28,3 +28,10 @@ export interface Post {
 }
 
 export interface Team {}
+
+export interface Reply {
+  id: number
+  author: Mention
+  message: string
+  createdAt: string
+}

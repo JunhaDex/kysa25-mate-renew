@@ -1,6 +1,6 @@
 import ApiService from '@/services/api.service.ts'
 import type { KeyMapping, PageRequest, PageResponse } from '@/types/common.type.ts'
-import type { Post } from '@/types/group.type.ts'
+import type { Post, Reply } from '@/types/group.type.ts'
 import { cleanObj, genRandStr } from '@/utils/use.util.ts'
 
 export class PostService extends ApiService {
@@ -46,6 +46,14 @@ export class PostService extends ApiService {
       }
     }
     return this.emptyPage as PageResponse<Post>
+  }
+
+  async getPostById(id: number): Promise<{ post: Post; reply: PageResponse<Reply> }> {
+    const res = await this.setAuth().get(`/detail/${id}`)
+    const { post, comments } = this.unpackRes(res) as { post: any; comments: PageResponse<Reply> }
+    return {
+      post: cleanObj<Post>(post, this.postKeyMapping),
+    }
   }
 
   async uploadImage(type: string, file: File): Promise<{ location: string }> {
