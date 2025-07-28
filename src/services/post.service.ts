@@ -14,6 +14,12 @@ export class PostService extends ApiService {
     already: 'isLiked',
   }
 
+  private replyKeyMapping: KeyMapping = {
+    id: 'id',
+    message: 'message',
+    createdAt: 'createdAt',
+  }
+
   constructor() {
     super('post')
   }
@@ -51,8 +57,27 @@ export class PostService extends ApiService {
   async getPostById(id: number): Promise<{ post: Post; reply: PageResponse<Reply> }> {
     const res = await this.setAuth().get(`/detail/${id}`)
     const { post, comments } = this.unpackRes(res) as { post: any; comments: PageResponse<Reply> }
+    const postDetail = cleanObj<Post>(post, this.postKeyMapping)
+    postDetail.author = {
+      ref: post.authorRef,
+      nickname: post.authorNickname,
+      profileImg: post.authorProfileImg,
+    }
+    const replyList = comments.list.map((reply: any) => {
+      const semi = cleanObj<Reply>(reply, this.replyKeyMapping)
+      semi.author = {
+        ref: reply.authorRef,
+        nickname: reply.authorNickname,
+        profileImg: reply.authorProfileImg,
+      }
+      return semi
+    })
     return {
-      post: cleanObj<Post>(post, this.postKeyMapping),
+      post: postDetail,
+      reply: {
+        meta: comments.meta,
+        list: replyList,
+      },
     }
   }
 
@@ -92,11 +117,13 @@ export class PostService extends ApiService {
     )
   }
 
+  async createComment(postId: number, params: { message: string }): Promise<void> {
+    await this.setAuth().post(`/${postId}/reply/new`, params)
+  }
+
   // async getPostByRef()
   //
   // async deletePost()
-  //
-  // async createComment()
   //
   // async deleteComment()
 }

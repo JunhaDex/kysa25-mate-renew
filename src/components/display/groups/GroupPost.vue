@@ -1,5 +1,5 @@
 <template>
-  <div class="group-post">
+  <div class="group-post" @click="router.push(`/group/post/${post.id}`)">
     <div class="author mb-2">
       <div class="profile"></div>
       <div class="author-info flex-1">
@@ -13,7 +13,7 @@
       <p>{{ post.content }}</p>
     </div>
     <div class="action-wrap pb-4">
-      <button class="action-icon" @click="toggleLike">
+      <button class="action-icon" @click.stop="toggleLike">
         <Heart
           :size="16"
           :fill="likeState.isLiked ? `var(--color-tx-red)` : 'transparent'"
@@ -34,10 +34,12 @@ import type { Post } from '@/types/group.type.ts'
 import { computed, ref } from 'vue'
 import { timeToStr } from '@/utils/use.util.ts'
 import { PostService } from '@/services/post.service.ts'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   post: Post
 }>()
+const router = useRouter()
 const postSvc = new PostService()
 const likeState = ref<{ count: number; isLiked: boolean }>({
   count: props.post.likes,
@@ -83,25 +85,5 @@ async function toggleLike() {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.action-icon {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background-color: var(--color-background-2);
-  cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
-
-  &:hover {
-    background-color: var(--color-background-3);
-  }
-
-  & .count {
-    font-size: var(--text-xs);
-    color: var(--color-text-default);
-  }
 }
 </style>

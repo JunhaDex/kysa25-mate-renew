@@ -34,6 +34,12 @@ const router = createRouter({
           props: true,
           component: () => import('@/pages/group/New.vue'),
         },
+        {
+          path: 'post/:id',
+          name: 'group-post',
+          props: true,
+          component: () => import('@/pages/group/Post.vue'),
+        },
       ],
     },
     {
