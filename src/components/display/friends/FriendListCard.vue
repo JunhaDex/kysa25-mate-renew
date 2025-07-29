@@ -1,7 +1,12 @@
 <template>
   <div class="s-card">
     <div class="friend-card">
-      <div v-for="friend in list" class="friend-title" :key="friend.id">
+      <div
+        v-for="friend in list"
+        class="friend-title"
+        :key="friend.id"
+        @click="() => emit('selectFriend', friend)"
+      >
         <div class="inner">
           <h3 class="text-lg font-bold">{{ friend.nickname }}</h3>
           <p class="text-xs font-medium text-shadow-tx-gray-3">{{ friend.geo }}</p>
@@ -16,6 +21,7 @@ import type { Friend } from '@/types/friend.type.ts'
 const props = defineProps<{
   list: Friend[]
 }>()
+const emit = defineEmits(['selectFriend'])
 </script>
 <style scoped>
 .friend-title {

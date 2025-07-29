@@ -85,3 +85,13 @@ main {
     color: var(--color-tx-gray-1);
   }
 }
+
+.s-modal {
+  background-color: var(--color-background-1);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  width: 90vw;
+  max-width: 690px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
