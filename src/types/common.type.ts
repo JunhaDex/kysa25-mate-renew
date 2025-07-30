@@ -28,4 +28,9 @@ export interface Mention {
   profileImg?: string
 }
 
+export interface ToastMessage {
+  id: number
+  message: string
+}
+
 export type SkeletonUIType = 'list-card'

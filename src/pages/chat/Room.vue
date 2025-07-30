@@ -15,7 +15,7 @@
           @input="adjustInputHeight"
         />
       </div>
-      <button class="s-btn btn-outline">관심보내기</button>
+      <button class="s-btn btn-outline" @click="handleClick">관심보내기</button>
     </div>
   </div>
 </template>
@@ -25,11 +25,13 @@ import ChatBubble from '@/components/display/chat/ChatBubble.vue'
 import { onMounted, ref } from 'vue'
 import { ChatService } from '@/services/chat.service.ts'
 import type { Chat } from '@/types/chat.type.ts'
+import { useUiStore } from '@/stores/ui.store.ts'
 
 const props = defineProps<{
   id: string
 }>()
 const chatSvc = new ChatService()
+const uiStore = useUiStore()
 const chatList = ref<Chat[]>([])
 onMounted(async () => {
   await fetchChatMessages()
@@ -43,6 +45,10 @@ function adjustInputHeight(e: Event) {
   const input = e.target as HTMLTextAreaElement
   input.style.height = 'auto'
   input.style.height = `${input.scrollHeight}px`
+}
+
+function handleClick() {
+  uiStore.showToast('테스트 메세지')
 }
 </script>
 <style scoped>
