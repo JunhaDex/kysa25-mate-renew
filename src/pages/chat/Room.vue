@@ -1,13 +1,21 @@
 <template>
   <Header />
   <section class="chat-bubble-list bg-background-2 p-4">
-    <ChatBubble type="receive" />
-    <ChatBubble type="send" />
+    <template v-if="chatRoom && users">
+      <ChatBubble
+        v-for="chat in chatList"
+        :key="chat.id"
+        :chat="chat"
+        :users="users"
+        :type="chat.sender === chatRoom.userId ? 'send' : 'receive'"
+      />
+    </template>
   </section>
-  <div class="sticky-input">
-    <div class="flex justify-between items-end gap-2 p-4">
+  <div class="input-fixed">
+    <div class="flex justify-between items-stretch gap-2 p-4">
       <div class="s-input-box flex-1">
         <textarea
+          v-model="userMessage"
           class="s-input-field"
           type="text"
           placeholder="메시지를 입력하세요..."
@@ -15,7 +23,10 @@
           @input="adjustInputHeight"
         />
       </div>
-      <button class="s-btn btn-outline" @click="handleClick">관심보내기</button>
+      <button v-if="userMessage.length > 0" class="s-btn btn-primary" @click="sendMessage">
+        전송
+      </button>
+      <button v-else class="s-btn btn-outline" @click="sendTicket">관심보내기</button>
     </div>
   </div>
 </template>
@@ -24,21 +35,53 @@ import Header from '@/components/layouts/Header.vue'
 import ChatBubble from '@/components/display/chat/ChatBubble.vue'
 import { onMounted, ref } from 'vue'
 import { ChatService } from '@/services/chat.service.ts'
-import type { Chat } from '@/types/chat.type.ts'
+import type { Chat, ChatRoom } from '@/types/chat.type.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
+import { usePagination } from '@/compositions/pages.comp.ts'
+import type { Friend, UserProfile } from '@/types/friend.type.ts'
 
 const props = defineProps<{
   id: string
 }>()
 const chatSvc = new ChatService()
 const uiStore = useUiStore()
+const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
 const chatList = ref<Chat[]>([])
+const chatRoom = ref<ChatRoom>()
+const users = ref<UserProfile[]>([])
+const userMessage = ref<string>('')
+let chatSocket: WebSocket
 onMounted(async () => {
+  await initSocket()
   await fetchChatMessages()
 })
 
 async function fetchChatMessages() {
-  await chatSvc.getChatRoom(props.id)
+  const info = await chatSvc.getChatRoomDetail(props.id)
+  chatRoom.value = info.room
+  users.value = info.users
+  chatList.value = await fetchListData(chatSvc.getChatRoom(props.id))
+}
+
+async function initSocket() {
+  let isSuccess = false
+  try {
+    chatSocket = chatSvc.getSocket(props.id)
+    isSuccess = true
+    console.log('socket connected')
+  } catch (e) {
+    console.error('soekcet failed', e)
+  }
+  if (isSuccess) {
+    chatSocket.onmessage = (event) => {
+      try {
+        const newChat = chatSvc.parseSocketMessage(JSON.parse(event.data))
+        chatList.value.push(newChat)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
 }
 
 function adjustInputHeight(e: Event) {
@@ -47,17 +90,22 @@ function adjustInputHeight(e: Event) {
   input.style.height = `${input.scrollHeight}px`
 }
 
-function handleClick() {
+function sendTicket() {
   uiStore.showToast('테스트 메세지')
+}
+
+function sendMessage() {
+  chatSocket.send(JSON.stringify({ message: userMessage.value, encoded: false }))
 }
 </script>
 <style scoped>
-.sticky-input {
-  position: sticky;
+.input-fixed {
+  position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 768px;
   background-color: var(--color-background-1);
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }

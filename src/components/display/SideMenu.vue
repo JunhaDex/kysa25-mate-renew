@@ -6,13 +6,21 @@
           <img src="@/assets/images/logo_mate.png" alt="app-logo" />
         </div>
       </div>
-      <div class="menu-user-profile">
-        <div class="profile-image"></div>
-        <div class="profile-info">
-          <h3 class="text-lg font-bold">사용자 이름</h3>
+      <div v-if="authStore.myInfo" class="menu-user-profile">
+        <div class="profile-image">
+          <img :src="authStore.myInfo.profileImg" alt="user-profile" />
         </div>
-        <!--        <button class="s-btn btn-secondary">내 설정</button>-->
-        <UserRoundCog :size="24" />
+        <div class="profile-info">
+          <h3 class="text-lg font-bold">
+            {{authStore.myInfo.nickname}}
+          </h3>
+        </div>
+        <Settings :size="24" />
+      </div>
+      <div v-else class="login mb-4">
+        <button class="s-btn btn-primary w-full block" @click="closeMenu">
+          <span class="text-sm font-semibold">로그인</span>
+        </button>
       </div>
       <ul class="menu-list">
         <li class="menu-item" @click="() => goMenu('/')">
@@ -32,16 +40,6 @@
           <span class="menu-text">메세지</span>
         </li>
       </ul>
-      <hr class="border-border-default w-[50%] mx-auto border-1 mb-4" />
-      <div class="groups">
-        <h3 class="font-semibold mb-4">내 동아리</h3>
-        <ul class="menu-list">
-          <li class="group-item">
-            <div class="group-profile"></div>
-            <span class="item-text">동아리 1</span>
-          </li>
-        </ul>
-      </div>
       <div class="menu-footer">
         <ul class="menu-list">
           <li class="group-item" @click="() => (authStore.ui.isDark = !authStore.ui.isDark)">
@@ -55,7 +53,7 @@
               </label>
             </div>
           </li>
-          <li class="group-item">
+          <li class="group-item" @click="authSvc.logout()">
             <LogOut :size="16" />
             <span class="item-text">로그아웃</span>
           </li>
@@ -69,11 +67,12 @@
   <div v-if="isOpen" class="s-backdrop" @click.prevent="closeMenu"></div>
 </template>
 <script lang="ts" setup>
-import { Home, Send, Users, HeartHandshake, UserRoundCog, Sun, Moon, LogOut } from 'lucide-vue-next'
+import { Home, Send, Users, HeartHandshake, Settings, Sun, Moon, LogOut } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth.store.ts'
 import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { sleep } from '@/utils/use.util.ts'
+import { AuthService } from '@/services/auth.service.ts'
 
 const props = defineProps<{
   isOpen: boolean
@@ -92,6 +91,7 @@ watch(
 const emit = defineEmits(['close'])
 const router = useRouter()
 const authStore = useAuthStore()
+const authSvc = new AuthService()
 const darkModeMenuName = computed(() => {
   return authStore.ui.isDark ? 'Dark Mode' : 'Light Mode'
 })
@@ -153,6 +153,12 @@ async function goMenu(path: string) {
     width: 48px;
     height: 48px;
     aspect-ratio: 1;
+    overflow: hidden;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   & .profile-info {

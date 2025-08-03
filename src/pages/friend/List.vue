@@ -38,13 +38,18 @@
             APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP
           </span>
         </div>
-        <h2 class="text-2xl font-semibold">{{friendInfo.friend.nickname}}</h2>
+        <h2 class="text-2xl font-semibold">{{ friendInfo.friend.nickname }}</h2>
         <div class="text-tx-gray-3 text-sm font-semibold mb-2">1조</div>
         <p class="introduce">자기소개</p>
       </div>
       <div class="flex justify-between items-center gap-2 px-4">
-        <button class="s-btn btn-primary w-full block">메세지 보내기</button>
-        <button class="s-btn btn-secondary w-full block">프로필 상세</button>
+        <button class="s-btn btn-primary w-full block" @click="getChatRoom">메세지 보내기</button>
+        <button
+          class="s-btn btn-secondary w-full block"
+          @click="router.push(`/friend/${friendInfo.friend?.ref}`)"
+        >
+          프로필 상세
+        </button>
       </div>
     </div>
   </Modal>
@@ -62,8 +67,12 @@ import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 import SkeletonFactory from '@/components/surfaces/SkeletonFactory.vue'
 import { useDebounceFn } from '@vueuse/core'
 import Modal from '@/components/feedbacks/Modal.vue'
+import { useRouter } from 'vue-router'
+import { ChatService } from '@/services/chat.service.ts'
 
+const router = useRouter()
 const friendSvc = new FriendService()
+const chatSvc = new ChatService()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
 const friendList = ref<Friend[]>([])
 const searchWord = ref<string>('')
@@ -129,6 +138,15 @@ async function searchFriendList() {
 async function selectFriend(friend: Friend) {
   friendInfo.value.isOpen = true
   friendInfo.value.friend = friend
+}
+
+async function getChatRoom() {
+  if (friendInfo.value.friend) {
+    const roomRef = await chatSvc.getChatRoomRef(friendInfo.value.friend.ref)
+    if (roomRef) {
+      router.push(`/chat/${roomRef}`)
+    }
+  }
 }
 </script>
 <style scoped>

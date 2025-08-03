@@ -81,11 +81,19 @@ export class PostService extends ApiService {
     }
   }
 
-  async uploadImage(type: string, file: File): Promise<{ location: string }> {
+  async uploadImage(
+    type: string,
+    file: File,
+    options?: {
+      nickname?: string
+    },
+  ): Promise<{ location: string }> {
     let path = ''
     if (type === 'post') {
       const salt = genRandStr(7)
       path = `/upload/post/${salt}`
+    } else if (type === 'user-profile') {
+      path = `/upload/user/profile/${options?.nickname}`
     }
     if (path) {
       const formData = new FormData()

@@ -4,6 +4,7 @@ export interface Mention {
 }
 
 export interface UserProfile extends Mention {
+  id: number
   profileImg: string
   coverImg: string
   introduce: string
@@ -11,7 +12,6 @@ export interface UserProfile extends Mention {
 }
 
 export interface Friend extends UserProfile {
-  id: number
   name: string
   sex: number //iso 5218
   age: number

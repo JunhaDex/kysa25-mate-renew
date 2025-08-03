@@ -70,7 +70,6 @@ function adjustInputHeight(e: Event) {
 
 function openFileInput() {
   const fileInput = document.getElementById('postImageInput') as HTMLInputElement
-  console.log('aaa')
   if (fileInput) {
     fileInput.click()
   }

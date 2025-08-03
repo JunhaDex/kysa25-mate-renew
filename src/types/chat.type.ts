@@ -7,6 +7,7 @@ export interface ChatRoom {
   isBlock: boolean
   lastRead: number
   lastChat: Chat
+  userId: number
   party: UserProfile[]
 }
 

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import type { Friend } from '@/types/friend.type.ts'
 
 export const useAuthStore = defineStore(
   'auth',
@@ -10,9 +11,11 @@ export const useAuthStore = defineStore(
       isDark: false,
     })
     const token = ref<string>('')
+    const myInfo = ref<Friend>()
     return {
       ui,
-      token
+      token,
+      myInfo,
     }
   },
   { persist: true },

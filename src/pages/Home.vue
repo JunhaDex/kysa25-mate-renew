@@ -8,24 +8,22 @@
       <div class="hero-title">
         <h2 class="text-2xl sm:text-3xl font-bold mb-4">신입생 여러분을 환영합니다!</h2>
         <p class="mb-2">3박 4일의 청년대회 함께 즐겨요~</p>
-        <button class="s-btn btn-primary">환영받기</button>
+        <button class="s-btn btn-primary" @click="openWelcome">환영받기</button>
       </div>
     </div>
     <div class="home-about s-safe-area my-4">
       <h1 class="text-lg font-bold mb-2">바로가기</h1>
       <div class="flex justify-center items-center gap-4">
-        <a href="#">
-          <div class="tray-item">
-            <CalendarDays :size="36" />
-            <span class="text-sm font-semibold text-nowrap">대회일정</span>
-          </div>
-        </a>
-        <a href="#">
+        <div class="tray-item" @click="scrollToTimetable">
+          <CalendarDays :size="36" />
+          <span class="text-sm font-semibold text-nowrap">대회일정</span>
+        </div>
+        <router-link to="/group">
           <div class="tray-item">
             <Blocks :size="36" />
             <span class="text-sm font-semibold text-nowrap">동아리방</span>
           </div>
-        </a>
+        </router-link>
         <a href="#">
           <div class="tray-item">
             <BusFront :size="36" />
@@ -78,7 +76,7 @@
         </ul>
       </div>
     </div>
-    <div class="home-content s-safe-area mb-4">
+    <div class="home-content s-safe-area mb-4" id="TimeSchduleBox">
       <h1 class="text-lg font-bold mb-2">대회 일정</h1>
       <div class="s-card">
         <div class="timetable-grid">
@@ -127,6 +125,7 @@
   <div class="bg-background-2">
     <Footer />
   </div>
+  <WelcomeDrop :is-open="isWelcome" @close="() => (isWelcome = false)" />
 </template>
 <script lang="ts" setup>
 import Header from '@/components/layouts/Header.vue'
@@ -135,7 +134,14 @@ import { computed, ref } from 'vue'
 import { CalendarDays, Blocks, BusFront, BadgeInfo } from 'lucide-vue-next'
 import dayjs from 'dayjs'
 import scheduleData from '@/assets/statics/schedule.json'
+import WelcomeDrop from '@/components/display/WelcomeDrop.vue'
+import { useAuthStore } from '@/stores/auth.store.ts'
+import { useUiStore } from '@/stores/ui.store.ts'
+import router from '@/router'
 
+const authStore = useAuthStore()
+const uiStore = useUiStore()
+const isWelcome = ref<boolean>(false)
 const timetable = ref<{
   timeframe: {
     start: string
@@ -197,6 +203,22 @@ const eventList = computed<
   }
   return events
 })
+
+function openWelcome() {
+  if (!authStore.myInfo) {
+    uiStore.showToast('로그인이 필요합니다')
+    router.push('/login')
+    return
+  }
+  isWelcome.value = true
+}
+
+function scrollToTimetable() {
+  const element = document.querySelector('#TimeSchduleBox')
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 <style scoped>
 .home-hero {

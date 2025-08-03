@@ -16,6 +16,7 @@ export class FriendService extends ApiService {
     profileImg: 'profileImg',
     introduce: 'introduce',
   }
+
   constructor() {
     super('user')
   }
@@ -55,5 +56,19 @@ export class FriendService extends ApiService {
       }
     }
     return this.emptyPage as PageResponse<Friend>
+  }
+
+  async getFriend(ref: string): Promise<{ friend: Friend; extra?: any }> {
+    const res = await this.setAuth().get(`/${ref}`)
+    const { user, extra } = this.unpackRes(res) as any
+    const friend = cleanObj<Friend>(user, this.friendKeyMapping)
+    friend.team = {
+      teamId: user.teamId,
+      teamName: user.teamName,
+    }
+    return {
+      friend,
+      extra,
+    }
   }
 }

@@ -50,6 +50,12 @@ const router = createRouter({
           name: 'friend-list',
           component: () => import('@/pages/friend/List.vue'),
         },
+        {
+          path: ':id',
+          name: 'friend-detail',
+          props: true,
+          component: () => import('@/pages/friend/Detail.vue'),
+        },
       ],
     },
     {
@@ -71,7 +77,7 @@ const router = createRouter({
     {
       path: '/user/profile',
       name: 'user-profile',
-      component: () => import('@/pages/user/Profile.vue'),
+      component: () => import('@/pages/friend/Edit.vue'),
     },
     {
       path: '/error',
