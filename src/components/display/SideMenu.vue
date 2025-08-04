@@ -12,13 +12,13 @@
         </div>
         <div class="profile-info">
           <h3 class="text-lg font-bold">
-            {{authStore.myInfo.nickname}}
+            {{ authStore.myInfo.nickname }}
           </h3>
         </div>
-        <Settings :size="24" />
+        <Settings :size="24" @click="router.push('/user/profile')" />
       </div>
       <div v-else class="login mb-4">
-        <button class="s-btn btn-primary w-full block" @click="closeMenu">
+        <button class="s-btn btn-primary w-full block" @click="goLogin">
           <span class="text-sm font-semibold">로그인</span>
         </button>
       </div>
@@ -53,7 +53,7 @@
               </label>
             </div>
           </li>
-          <li class="group-item" @click="authSvc.logout()">
+          <li v-if="authStore.myInfo" class="group-item" @click="logout">
             <LogOut :size="16" />
             <span class="item-text">로그아웃</span>
           </li>
@@ -73,6 +73,7 @@ import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { sleep } from '@/utils/use.util.ts'
 import { AuthService } from '@/services/auth.service.ts'
+import { useUiStore } from '@/stores/ui.store.ts'
 
 const props = defineProps<{
   isOpen: boolean
@@ -91,6 +92,7 @@ watch(
 const emit = defineEmits(['close'])
 const router = useRouter()
 const authStore = useAuthStore()
+const uiStore = useUiStore()
 const authSvc = new AuthService()
 const darkModeMenuName = computed(() => {
   return authStore.ui.isDark ? 'Dark Mode' : 'Light Mode'
@@ -104,6 +106,19 @@ async function goMenu(path: string) {
   emit('close')
   await sleep(0) // Ensure ui change
   router.push(path)
+}
+
+async function goLogin() {
+  emit('close')
+  await sleep(0) // Ensure ui change
+  router.push('/login')
+}
+
+async function logout() {
+  emit('close')
+  await sleep(0) // Ensure ui change
+  authSvc.logout()
+  uiStore.showToast('로그아웃 되었습니다.')
 }
 </script>
 <style scoped>
