@@ -36,8 +36,12 @@
       </div>
     </section>
     <div class="bg-background-2 h-[1rem]"></div>
-    <section class="post-reply px-4 pt-4">
-      <PostReply v-for="reply in replyList" :key="reply.id" :reply="reply" />
+    <section class="post-reply-wrap px-4 pt-4">
+      <PostReply v-for="reply in replyList" :key="reply.id" class="mb-4" :reply="reply" />
+      <div v-if="!onLoad && replyList.length === 0" class="no-result">
+        <span>첫번째 댓글을 남기세요!</span>
+      </div>
+      <ScrollObserver @load-more="fetchNext" />
     </section>
   </template>
   <div class="sticky-input">
@@ -65,11 +69,14 @@ import { timeToStr } from '@/utils/use.util.ts'
 import { Heart, MessageCircleMore } from 'lucide-vue-next'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import PostReply from '@/components/display/groups/PostReply.vue'
+import { useLockHandler } from '@/compositions/process.comp.ts'
+import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 
 const props = defineProps<{
   id: string
 }>()
 const postSvc = new PostService()
+const { isLocked, lockProcess } = useLockHandler()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
 const postDetail = ref<Post>()
 const replyList = ref<Reply[]>([])
@@ -90,9 +97,21 @@ async function fetchPostDetail() {
   replyList.value = reply.list
 }
 
-async function fetchReplyList() {}
+async function fetchReplyList() {
+  replyList.value = await fetchListData(postSvc.getPostReply(Number(props.id)))
+}
 
-async function fetchNext() {}
+async function fetchNext() {
+  const list = await fetchListData(
+    postSvc.getPostReply(Number(props.id), {
+      page: {
+        page: pageInfo.value.pageNo + 1,
+        size: pageInfo.value.pageSize,
+      },
+    }),
+  )
+  replyList.value.push(...list)
+}
 
 function adjustInputHeight(e: Event) {
   const input = e.target as HTMLTextAreaElement
@@ -112,8 +131,11 @@ async function toggleLike() {
 
 async function submitReply() {
   if (userInputReply.value.trim() === '') return
-  await postSvc.createComment(Number(props.id), { message: userInputReply.value })
-  userInputReply.value = ''
+  await lockProcess(async () => {
+    await postSvc.createComment(Number(props.id), { message: userInputReply.value })
+    userInputReply.value = ''
+  })
+  await fetchReplyList()
 }
 </script>
 <style scoped>
@@ -143,7 +165,7 @@ async function submitReply() {
   gap: 0.5rem;
 }
 
-.post-reply {
+.post-reply-wrap {
   margin-bottom: calc(76px + 1rem);
 }
 

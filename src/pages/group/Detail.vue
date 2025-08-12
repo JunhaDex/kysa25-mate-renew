@@ -29,6 +29,10 @@
     <div class="bg-background-2 h-[1rem]"></div>
     <section class="group-content">
       <GroupPost v-for="post in postList" class="mb-4" :key="post.id" :post="post" />
+      <div v-if="!onLoad && postList.length === 0" class="no-result">
+        <span>게시글이 없습니다.</span>
+      </div>
+      <ScrollObserver @load-more="fetchNext" />
     </section>
     <button
       class="s-btn btn-primary btn-cta-round"
@@ -50,6 +54,7 @@ import type { Group, Post } from '@/types/group.type.ts'
 import { PostService } from '@/services/post.service.ts'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import { useRouter } from 'vue-router'
+import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 
 const props = defineProps<{
   id: string
@@ -59,7 +64,7 @@ const postSvc = new PostService()
 const router = useRouter()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
 const groupDetail = ref<Group>()
-const postList = ref<Post[]>()
+const postList = ref<Post[]>([])
 const isExpandBtn = ref(true)
 let scrollContainer: HTMLElement | null = null
 
@@ -95,6 +100,16 @@ async function fetchGroupDetail() {
       },
     }),
   )
+}
+
+async function fetchNext() {
+  const list = await fetchListData(postSvc.getGroupPosts(props.id, {
+    page: {
+      page: pageInfo.value.pageNo + 1,
+      size: pageInfo.value.pageSize,
+    },
+  }))
+  postList.value.push(...list)
 }
 </script>
 <style scoped>

@@ -8,7 +8,7 @@
           <span class="text-xs text-shadow-tx-gray-3">{{ tts }}</span>
         </div>
         <div class="message-preview">
-          <p class="text-sm text-shadow-tx-gray-2">{{ room.lastChat.message }}</p>
+          <p class="text-sm text-shadow-tx-gray-2">{{ preview }}</p>
         </div>
       </div>
     </div>
@@ -25,6 +25,15 @@ const props = defineProps<{
   room: ChatRoom
 }>()
 const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
+const preview = computed(() => {
+  const enc = props.room.lastChat.encoded
+    ? '메세지가 도착했습니다.'
+    : props.room.lastChat.message
+  if (enc.length > 12) {
+    return enc.slice(0, 12) + '...'
+  }
+  return enc
+})
 
 function moveToChatRoom() {
   const chatRoute = router.getRoutes().find((route) => route.name === 'chat-detail')

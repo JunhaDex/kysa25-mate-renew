@@ -81,6 +81,36 @@ export class PostService extends ApiService {
     }
   }
 
+  async getPostReply(id: number, options?: { page?: PageRequest }) {
+    const res = await this.setAuth().get(`/${id}/reply`, {
+      params: {
+        page: options?.page?.page,
+        size: options?.page?.size || 10,
+      },
+    })
+    const { meta, list } = this.unpackRes(res) as PageResponse<Reply>
+    if (list.length > 0) {
+      return {
+        meta: {
+          pageNo: meta.pageNo,
+          pageSize: meta.pageSize,
+          totalPage: meta.totalPage,
+          totalCount: meta.totalCount,
+        },
+        list: list.map((reply: any) => {
+          const semi = cleanObj<Reply>(reply, this.replyKeyMapping)
+          semi.author = {
+            ref: reply.authorRef,
+            nickname: reply.authorNickname,
+            profileImg: reply.authorProfileImg,
+          }
+          return semi
+        }),
+      }
+    }
+    return this.emptyPage as PageResponse<Reply>
+  }
+
   async uploadImage(
     type: string,
     file: File,
@@ -131,7 +161,11 @@ export class PostService extends ApiService {
 
   // async getPostByRef()
   //
-  // async deletePost()
-  //
-  // async deleteComment()
+  async deletePost(postId: number): Promise<void> {
+    await this.setAuth().delete(`/${postId}/delete`)
+  }
+
+  async deleteReply(postId: number, replyId: number): Promise<void> {
+    await this.setAuth().delete(`/${postId}/reply/${replyId}/delete`)
+  }
 }

@@ -37,7 +37,10 @@
           />
         </div>
       </div>
-      <button class="s-btn btn-primary w-full block" type="submit">게시글 작성하기</button>
+      <button class="s-btn btn-primary w-full block" type="submit" :disabled="isLocked">
+        <span v-if="isLocked" class="icon icon-loading" />
+        <span v-else>게시글 작성하기</span>
+      </button>
     </form>
   </section>
 </template>
@@ -47,8 +50,14 @@ import { Image } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { convertBlobToBase64 } from '@/utils/use.util.ts'
 import { PostService } from '@/services/post.service.ts'
+import { useLockHandler } from '@/compositions/process.comp.ts'
+import { useUiStore } from '@/stores/ui.store.ts'
+import { useRouter } from 'vue-router'
 
 const postSvc = new PostService()
+const router = useRouter()
+const uiStore = useUiStore()
+const { isLocked, lockProcess } = useLockHandler()
 const props = defineProps<{
   id: string
 }>()
@@ -84,16 +93,24 @@ async function selectImage(event: Event) {
 }
 
 async function submitPost() {
-  let imageUrl
-  if (userInput.value.image) {
-    const uploaded = await postSvc.uploadImage('post', userInput.value.image)
-    imageUrl = uploaded.location
+  try {
+    await lockProcess(async () => {
+      let imageUrl
+      if (userInput.value.image) {
+        const uploaded = await postSvc.uploadImage('post', userInput.value.image)
+        imageUrl = uploaded.location
+      }
+      await postSvc.createPost({
+        groupRef: props.id,
+        message: userInput.value.content,
+        image: imageUrl,
+      })
+    })
+    router.back()
+    uiStore.showToast('게시글 작성완료!', 'success')
+  } catch (e) {
+    uiStore.showToast('게시글을 쓸 수 없습니다.', 'error')
   }
-  await postSvc.createPost({
-    groupRef: props.id,
-    message: userInput.value.content,
-    image: imageUrl,
-  })
 }
 </script>
 <style scoped>

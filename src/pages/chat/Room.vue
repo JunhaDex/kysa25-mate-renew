@@ -121,6 +121,7 @@ function sendTicket() {
 
 function sendMessage() {
   chatSocket.send(JSON.stringify({ message: userMessage.value, encoded: false }))
+  userMessage.value = ''
 }
 </script>
 <style scoped>

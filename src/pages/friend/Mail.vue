@@ -2,16 +2,33 @@
   <Header />
   <section class="search-section p-4">
     <SearchInput
+      class="mb-2"
       v-model="searchWord"
       placeholder="친구이름 및 조별 검색"
       @update:model-value="searchFriendList"
     />
+    <p class="text-sm font-medium px-2">0명 선택됨</p>
   </section>
-  <section class="section-list bg-background-2 p-4">
-    <template v-for="(friends, team) in groupByTeam" :key="team">
-      <h2 class="text-lg font-semibold mb-2">{{ team }}</h2>
-      <FriendListCard :list="friends" @select-friend="selectFriend" />
-    </template>
+  <section class="section-list bg-background-1 p-4">
+    <div v-for="friend in friendList" :key="friend.id" class="friend-select">
+      <div class="inner">
+        <label class="checkbox checkbox-sm mr-2">
+          <input type="checkbox" />
+          <span class="control"></span>
+        </label>
+        <div class="flex-1">
+          <span class="text-xs leading-[10px] text-shadow-tx-gray-3">
+            {{ friend.team.teamName }}</span
+          >
+          <h3 class="text-lg font-bold">{{ friend.nickname }}</h3>
+        </div>
+        <p class="text-xs font-medium text-shadow-tx-gray-3">{{ friend.geo }}</p>
+      </div>
+    </div>
+    <!--    <template v-for="friend in friendList" :key="friend.id">-->
+    <!--      <h2 class="text-lg font-semibold mb-2">{{ team }}</h2>-->
+    <!--      <FriendListCard :list="friends" @select-friend="selectFriend" />-->
+    <!--    </template>-->
     <SkeletonFactory
       v-if="hasMore && onLoad"
       :setups="['list-card', 'list-card', 'list-card', 'list-card', 'list-card']"
@@ -24,44 +41,11 @@
       <span class="text-lg text-nowrap text-center">전송하기</span>
     </button>
   </section>
-  <div class="bg-background-2">
-    <Footer />
-  </div>
-  <Modal :is-open="friendInfo.isOpen" @close-modal="friendInfo.isOpen = false">
-    <div class="s-modal py-4">
-      <div v-if="friendInfo.friend" class="user-profile mb-4">
-        <div class="profile"></div>
-        <div class="flow-sign font-mono mt-4 mb-2">
-          <span class="sign-content">
-            KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE
-            APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP
-          </span>
-          <span class="sign-content">
-            KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE
-            APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP
-          </span>
-        </div>
-        <h2 class="text-2xl font-semibold">{{ friendInfo.friend.nickname }}</h2>
-        <div class="text-tx-gray-3 text-sm font-semibold mb-2">1조</div>
-        <p class="introduce">자기소개</p>
-      </div>
-      <div class="flex justify-between items-center gap-2 px-4">
-        <button class="s-btn btn-primary w-full block" @click="getChatRoom">메세지 보내기</button>
-        <button
-          class="s-btn btn-secondary w-full block"
-          @click="router.push(`/friend/${friendInfo.friend?.ref}`)"
-        >
-          프로필 상세
-        </button>
-      </div>
-    </div>
-  </Modal>
 </template>
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
 import SearchInput from '@/components/inputs/SearchInput.vue'
 import FriendListCard from '@/components/display/friends/FriendListCard.vue'
-import Footer from '@/components/layouts/Footer.vue'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import { computed, onMounted, ref } from 'vue'
 import type { Friend } from '@/types/friend.type.ts'
@@ -69,10 +53,8 @@ import { FriendService } from '@/services/friend.service.ts'
 import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 import SkeletonFactory from '@/components/surfaces/SkeletonFactory.vue'
 import { useDebounceFn } from '@vueuse/core'
-import Modal from '@/components/feedbacks/Modal.vue'
 import { useRouter } from 'vue-router'
 import { ChatService } from '@/services/chat.service.ts'
-import { Plus } from 'lucide-vue-next'
 
 const router = useRouter()
 const friendSvc = new FriendService()
@@ -86,19 +68,6 @@ const friendInfo = ref<{
 }>({
   isOpen: false,
   friend: null,
-})
-const groupByTeam = computed<Record<string, Friend[]>>(() => {
-  return friendList.value.reduce(
-    (acc, friend) => {
-      const team = friend.team.teamName
-      if (!acc[team]) {
-        acc[team] = []
-      }
-      acc[team].push(friend)
-      return acc
-    },
-    {} as Record<string, Friend[]>,
-  )
 })
 
 onMounted(async () => {
@@ -158,34 +127,17 @@ async function getChatRoom() {
   min-height: calc(100vh - 135px);
 }
 
-.user-profile {
-  text-align: center;
+.friend-select {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--color-border-default);
 
-  & .profile {
-    width: 96px;
-    height: 96px;
-    background-color: var(--color-background-3);
-    border-radius: 50%;
-    margin: 0 auto;
+  & .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    transition: transform 0.15s ease-in-out;
   }
-}
-
-.flow-sign {
-  width: 100%;
-  height: 1.6rem;
-  background-color: var(--color-black);
-  color: var(--color-white);
-  overflow: hidden;
-  white-space: nowrap;
-  user-select: none;
-}
-
-.sign-content {
-  display: inline-block;
-  padding-right: 4px;
-  animation: ticker 20s linear infinite;
-  font-size: 0.7rem;
-  line-height: 1rem;
 }
 
 .btn-cta-round {
