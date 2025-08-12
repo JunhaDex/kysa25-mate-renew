@@ -31,6 +31,7 @@ export interface Mention {
 export interface ToastMessage {
   id: number
   message: string
+  type?: 'success' | 'error' | 'info' | 'message'
 }
 
 export type SkeletonUIType = 'list-card'

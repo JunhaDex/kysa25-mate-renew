@@ -1,19 +1,23 @@
 <template>
-  <div class="s-toast" :class="{ show: isShow }">
+  <div class="s-toast" :class="{ show: isShow }" @transitionend="waitForTransition">
     <span class="toast-icon">
-      <Check :size="16" />
+      <Check v-if="currentMessage?.type === 'success'" :size="16" />
+      <X v-else-if="currentMessage?.type === 'error'" :size="16" />
+      <Send v-else-if="currentMessage?.type === 'message'" :size="16" />
+      <Info v-else :size="16" />
     </span>
     <p class="flex-1 font-semibold text-sm">{{ currentMessage?.message ?? '' }}</p>
   </div>
 </template>
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next'
+import { Check, Info, X, Send } from 'lucide-vue-next'
 import { useUiStore } from '@/stores/ui.store.ts'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { ToastMessage } from '@/types/common.type.ts'
 
 const uiStore = useUiStore()
 const currentMessage = ref<ToastMessage>()
+const isShow = ref(false)
 watch(
   () => uiStore.toastList.length,
   () => {
@@ -22,14 +26,20 @@ watch(
     }
   },
 )
-const isShow = computed<boolean>(() => currentMessage.value !== undefined)
 
 function setCurrentMessage(message: ToastMessage) {
   currentMessage.value = message
+  isShow.value = true
   uiStore.toastList = uiStore.toastList.filter((m) => m.id !== message.id)
-  setTimeout(() => {
-    currentMessage.value = undefined
+  setTimeout(async () => {
+    isShow.value = false
   }, 3000)
+}
+
+function waitForTransition() {
+  if (!isShow.value) {
+    currentMessage.value = undefined
+  }
 }
 </script>
 <style scoped>

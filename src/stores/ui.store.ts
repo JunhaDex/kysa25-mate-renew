@@ -5,8 +5,8 @@ import type { ToastMessage } from '@/types/common.type.ts'
 export const useUiStore = defineStore('ui', () => {
   const toastList = ref<ToastMessage[]>([])
 
-  function showToast(message: string) {
-    toastList.value.push({ id: Date.now(), message: message })
+  function showToast(message: string, type?: 'success' | 'error' | 'info' | 'message') {
+    toastList.value.push({ id: Date.now(), message: message, type: type || 'info' })
   }
 
   return {

@@ -11,11 +11,15 @@ export const useAuthStore = defineStore(
       isDark: false,
     })
     const token = ref<string>('')
+    const fcm = ref<string>('')
     const myInfo = ref<Friend>()
+    const ticket = ref<number>(0)
     return {
       ui,
       token,
+      fcm,
       myInfo,
+      ticket,
     }
   },
   { persist: true },

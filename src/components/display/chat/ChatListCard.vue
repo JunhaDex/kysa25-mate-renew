@@ -1,6 +1,6 @@
 <template>
   <div class="s-card">
-    <div class="chat-list-item" @click="router.push(`/chat/${room.ref}`)">
+    <div class="chat-list-item" @click="moveToChatRoom">
       <div class="user-profile"></div>
       <div class="sender-info flex-1">
         <div class="name-time">
@@ -20,11 +20,19 @@ import { computed } from 'vue'
 import { timeToStr } from '@/utils/use.util.ts'
 import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const props = defineProps<{
   room: ChatRoom
 }>()
-const router = useRouter()
 const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
+
+function moveToChatRoom() {
+  const chatRoute = router.getRoutes().find((route) => route.name === 'chat-detail')
+  if (chatRoute) {
+    chatRoute.meta.recipient = props.room
+  }
+  router.push(`/chat/${props.room.ref}`)
+}
 </script>
 <style scoped>
 .chat-list-item {

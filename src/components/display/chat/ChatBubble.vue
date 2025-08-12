@@ -11,12 +11,21 @@
           class="chat-bubble"
           :class="type === 'receive' ? 'bubble-left' : 'bubble-right'"
         >
-          <div class="text-sm text-shadow-tx-gray-2">
-            <p>
-              <b>{{ encoded.from.nickname }} 님</b>이 호감을 표현했습니다.<br />
+          <div v-if="type === 'receive'" class="text-sm text-shadow-tx-gray-2">
+            <p class="mb-4">
+              <b>{{ encoded.from.nickname }} 님</b>이 관심을 표현했습니다.<br />
               나도 호감에 답해볼까요?
             </p>
-            <button class="s-btn btn-primary w-full block">관심에 답하기</button>
+            <button class="s-btn btn-primary w-full block" @click="replyTicket" :disabled="replied">
+              <span v-if="replied">답변 완료</span>
+              <span v-else>관심에 답하기</span>
+            </button>
+          </div>
+          <div v-else class="text-sm text-shadow-tx-gray-2">
+            <p>
+              <b>{{ encoded.to.nickname }}</b> 님에게 관심을 표현했습니다.<br />
+              좋은 소식이 있을지도?
+            </p>
           </div>
         </div>
         <div
@@ -58,14 +67,17 @@
 <script lang="ts" setup>
 import type { Chat } from '@/types/chat.type.ts'
 import type { UserProfile } from '@/types/friend.type.ts'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import dayjs from 'dayjs'
+import { ChatService } from '@/services/chat.service.ts'
 
+const chatSvc = new ChatService()
 const props = defineProps<{
   type: 'receive' | 'send'
   chat: Chat
   users: UserProfile[]
 }>()
+const emit = defineEmits(['reply'])
 const sender = computed<UserProfile>(() => {
   const user = props.users.find((user) => user.id === props.chat.sender)
   if (!user) {
@@ -73,6 +85,7 @@ const sender = computed<UserProfile>(() => {
   }
   return user
 })
+const replied = ref<boolean>(parseReplied())
 const encoded = computed(() => {
   if (props.chat.encoded) {
     return JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
@@ -90,7 +103,24 @@ const tts = computed(() => {
   } else if (us.startsWith('PM')) {
     return `오후 ${us.replace('PM', '').trim()}`
   }
+  return us
 })
+
+function parseReplied(): boolean {
+  if (props.chat.encoded) {
+    const msg = JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
+    return msg.replied
+  }
+  return false
+}
+
+async function replyTicket() {
+  if (!replied.value) {
+    replied.value = true
+    const parent = encoded.value
+    await chatSvc.sendTicket(parent.from.ref, parent.chatId)
+  }
+}
 </script>
 <style scoped>
 .sender-profile {

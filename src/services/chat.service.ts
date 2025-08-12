@@ -102,8 +102,11 @@ export class ChatService extends ApiService {
   }
 
   parseSocketMessage(msg: any): Chat {
-    console.log(msg)
-    return cleanObj<Chat>(msg, this.chatItemKeyMapping)
+    const reqKeys = ['id', 'sender', 'message', 'encoded', 'createdAt']
+    if (reqKeys.every((key) => Object.keys(msg).includes(key))) {
+      return cleanObj<Chat>(msg, this.chatItemKeyMapping)
+    }
+    throw new Error('Invalid message format')
   }
 
   /**
@@ -117,5 +120,16 @@ export class ChatService extends ApiService {
 
   async sendMessage() {}
 
+  async sendTicket(recipientRef: string, parentChatId?: number) {
+    const params = parentChatId ? { originId: parentChatId } : {}
+    await this.setAuth().post(`/ticket/${recipientRef}`, {}, { params })
+  }
+
   async markAsRead(chatRoomId: string): Promise<void> {}
+
+  async countTicketRemain(): Promise<number> {
+    const res = await this.setAuth().get('ticket/count')
+    const raw = this.unpackRes(res) as { count: number }
+    return raw.count
+  }
 }

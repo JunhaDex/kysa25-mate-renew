@@ -58,7 +58,7 @@
             <span class="item-text">로그아웃</span>
           </li>
         </ul>
-        <p class="footer-copy text-xs font-medium text-border-active">
+        <p class="footer-copy text-xs font-medium text-border-active text-center">
           © 2025 KYSA <i class="font-cursive">designed with</i> ❤️
         </p>
       </div>
@@ -118,7 +118,8 @@ async function logout() {
   emit('close')
   await sleep(0) // Ensure ui change
   authSvc.logout()
-  uiStore.showToast('로그아웃 되었습니다.')
+  router.push('/')
+  uiStore.showToast('로그아웃 되었습니다.', 'success')
 }
 </script>
 <style scoped>

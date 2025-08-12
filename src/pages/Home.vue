@@ -7,8 +7,13 @@
       </div>
       <div class="hero-title">
         <h2 class="text-2xl sm:text-3xl font-bold mb-4">신입생 여러분을 환영합니다!</h2>
-        <p class="mb-2">3박 4일의 청년대회 함께 즐겨요~</p>
-        <button class="s-btn btn-primary" @click="openWelcome">환영받기</button>
+        <div class="relative">
+          <button class="s-btn btn-primary text-lg" @click="openWelcome">환영받기</button>
+          <span class="btn-tail-label text-xs font-medium text-tx-gray-3">
+            버튼을 눌러보세요
+            <MousePointerClick :size="12" />
+          </span>
+        </div>
       </div>
     </div>
     <div class="home-about s-safe-area my-4">
@@ -25,15 +30,15 @@
           </div>
         </router-link>
         <a href="#">
-          <div class="tray-item">
-            <BusFront :size="36" />
-            <span class="text-sm font-semibold text-nowrap">셔틀버스</span>
+          <div class="tray-item" @click="scrollToMap">
+            <Map :size="36" />
+            <span class="text-sm font-semibold text-nowrap">대회지도</span>
           </div>
         </a>
-        <a href="#">
+        <a href="https://linktr.ee/hminje" target="_blank">
           <div class="tray-item">
             <BadgeInfo :size="36" />
-            <span class="text-sm font-semibold text-nowrap">필독사항</span>
+            <span class="text-sm font-semibold text-nowrap">안내사항</span>
           </div>
         </a>
       </div>
@@ -43,7 +48,10 @@
       <p class="font-bold mb-2">수강중인 강의</p>
       <div class="s-card mb-4">
         <p class="font-semibold mb-2">2025 그리스도에게로 나아옴 101</p>
-        <p class="text-sm text-shadow-tx-gray-3">강의 소개: ...</p>
+        <p class="text-sm text-shadow-tx-gray-3">
+          예수 그리스도의 가르침을 배우고 삶에 적용하며 하나님의 자녀로써 함께 나아갑니다. 일자별
+          주제를 통해 영적 발전을 이루고 강화됩니다
+        </p>
       </div>
       <div class="banner">
         <div class="left">
@@ -52,7 +60,7 @@
         <div class="right">
           <h3 class="text-lg font-bold mb-2 text-tx-primary">주제 성구 - 교성 88:63</h3>
           <p class="text-sm text-shadow-tx-gray-3">
-            "너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라"
+            "내게 가까이 오라. 그리하면 내가 너희에게 가까이 가리라."
           </p>
         </div>
       </div>
@@ -62,18 +70,48 @@
     <div class="home-content s-safe-area mb-4">
       <h1 class="text-lg font-bold mb-2">일자별 주제</h1>
       <div class="s-card">
-        <ul>
-          <li>첫째날(8/14): '오라' 청년대회에 온 것을 환영하며, 주님께 함께 가까이 가기.</li>
-          <li>
-            둘째날(8/15): '찾으라' 하나님의 자녀라는 정체성을 가지고 그 정체성을 공유하는 친구들과
-            즐거움을 찾기.
-          </li>
-          <li>
-            셋째날(8/16): '구하라' 주님과 성약을 맺고, 이 생을 살아갈 힘과 소망하는 것들을 얻을 힘을
-            구하기
-          </li>
-          <li>넷째날(8/17): '두드리라' 간증을 가지고 앞으로 나아가기.</li>
-        </ul>
+        <div class="topic">
+          <div class="topic-icon day-1">
+            <img src="@/assets/images/topic_day1.png" alt="day1-icon" />
+          </div>
+          <div>
+            <h3 class="title">첫째날(8/14)&nbsp;<b>'오라'</b></h3>
+            청년대회에 온 것을 환영하며, 주님께 함께 가까이 가기.
+          </div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="topic">
+          <div class="topic-icon day-2">
+            <img src="@/assets/images/topic_day2.png" alt="day1-icon" />
+          </div>
+          <div>
+            <h3 class="title">둘째날(8/15) &nbsp;<b>'찾으라'</b></h3>
+            하나님의 자녀라는 정체성을 가지고 그 정체성을 공유하는 친구들과 즐거움을 찾기.
+          </div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="topic">
+          <div class="topic-icon day-3">
+            <img src="@/assets/images/topic_day3.png" alt="day1-icon" />
+          </div>
+          <div>
+            <h3 class="title">셋째날(8/16)&nbsp; <b>'구하라'</b></h3>
+            주님과 성약을 맺고, 이 생을 살아갈 힘과 소망하는 것들을 얻을 힘을 구하기
+          </div>
+        </div>
+      </div>
+      <div class="s-card">
+        <div class="topic">
+          <div class="topic-icon day-4">
+            <img src="@/assets/images/topic_day4.png" alt="day1-icon" />
+          </div>
+          <div>
+            <h3 class="title">넷째날(8/17)&nbsp;<b>'두드리라'</b></h3>
+            간증을 가지고 앞으로 나아가기.
+          </div>
+        </div>
       </div>
     </div>
     <div class="home-content s-safe-area mb-4" id="TimeSchduleBox">
@@ -121,6 +159,15 @@
         </div>
       </div>
     </div>
+    <div class="home-content s-safe-area mb-4" id="CampusMap">
+      <h1 class="text-lg font-bold">대회 지도</h1>
+      <p class="text-sm mb-2 text-tx-gray-3">이미지를 길게 눌러 - 새탭에서 이미지 열기</p>
+      <div class="s-card">
+        <div class="rounded-lg overflow-hidden">
+          <img src="@/assets/images/campus_map.png" alt="Campus Map" />
+        </div>
+      </div>
+    </div>
   </section>
   <div class="bg-background-2">
     <Footer />
@@ -131,7 +178,7 @@
 import Header from '@/components/layouts/Header.vue'
 import Footer from '@/components/layouts/Footer.vue'
 import { computed, ref } from 'vue'
-import { CalendarDays, Blocks, BusFront, BadgeInfo } from 'lucide-vue-next'
+import { CalendarDays, Blocks, BadgeInfo, Map, MousePointerClick } from 'lucide-vue-next'
 import dayjs from 'dayjs'
 import scheduleData from '@/assets/statics/schedule.json'
 import WelcomeDrop from '@/components/display/WelcomeDrop.vue'
@@ -219,6 +266,13 @@ function scrollToTimetable() {
     element.scrollIntoView({ behavior: 'smooth' })
   }
 }
+
+function scrollToMap() {
+  const element = document.querySelector('#CampusMap')
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 <style scoped>
 .home-hero {
@@ -229,11 +283,11 @@ function scrollToTimetable() {
   position: relative;
   background-color: var(--color-background-2);
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 4/3;
   overflow: hidden;
 
   @media (min-width: 640px) {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
   }
 
   & img {
@@ -250,12 +304,14 @@ function scrollToTimetable() {
 .hero-title {
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 2rem;
   align-items: center;
 }
 
@@ -297,6 +353,48 @@ function scrollToTimetable() {
 
   & .right {
     flex: 1;
+  }
+}
+
+.topic {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  & h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 0.5rem;
+  }
+
+  & .topic-icon {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--color-background-2);
+
+    &.day-1 {
+      background-color: var(--color-teal-600);
+    }
+
+    &.day-2 {
+      background-color: var(--color-orange-600);
+    }
+
+    &.day-3 {
+      background-color: var(--color-blue-600);
+    }
+
+    &.day-4 {
+      background-color: var(--color-purple-600);
+    }
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
@@ -347,12 +445,23 @@ function scrollToTimetable() {
   padding: 0.3rem;
   overflow: hidden;
   width: 100%;
-  min-height: 56px;
+  min-height: 48px;
   text-wrap: pretty;
   line-height: 1;
 
   & .title {
     font-size: var(--text-sm);
   }
+}
+
+.btn-tail-label {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  z-index: 2;
+  left: 50%;
+  bottom: -0.25rem;
+  transform: translate(-50%, 100%);
+  text-wrap: nowrap;
 }
 </style>

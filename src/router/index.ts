@@ -71,8 +71,16 @@ const router = createRouter({
           name: 'chat-detail',
           props: true,
           component: () => import('@/pages/chat/Room.vue'),
+          meta: {
+            recipient: {} as any, //ChatRoom instance
+          },
         },
       ],
+    },
+    {
+      path: '/mail-room',
+      name: 'mail-room',
+      component: () => import('@/pages/friend/Mail.vue'),
     },
     {
       path: '/user/profile',

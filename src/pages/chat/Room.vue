@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header :has-back="true" :title="chatRoom.title" />
   <section class="chat-bubble-list bg-background-2 p-4">
     <template v-if="chatRoom && users">
       <ChatBubble
@@ -29,17 +29,26 @@
       <button v-else class="s-btn btn-outline" @click="sendTicket">관심보내기</button>
     </div>
   </div>
+  <SendTicketModal
+    v-if="recipient"
+    :is-open="userSendTicket.isOpen"
+    :target="recipient"
+    @close="userSendTicket.isOpen = false"
+  />
 </template>
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
 import ChatBubble from '@/components/display/chat/ChatBubble.vue'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ChatService } from '@/services/chat.service.ts'
 import type { Chat, ChatRoom } from '@/types/chat.type.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import type { Friend, UserProfile } from '@/types/friend.type.ts'
+import { useRouter } from 'vue-router'
+import SendTicketModal from '@/components/feedbacks/chat/SendTicketModal.vue'
 
+const router = useRouter()
 const props = defineProps<{
   id: string
 }>()
@@ -47,13 +56,25 @@ const chatSvc = new ChatService()
 const uiStore = useUiStore()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
 const chatList = ref<Chat[]>([])
-const chatRoom = ref<ChatRoom>()
+const chatRoom = ref<ChatRoom>((router.currentRoute.value.meta?.recipient as ChatRoom) ?? undefined)
 const users = ref<UserProfile[]>([])
+const recipient = computed(() => {
+  return users.value.find((user) => user.id !== chatRoom.value.userId)
+})
 const userMessage = ref<string>('')
+const userSendTicket = ref<{
+  isOpen: boolean
+}>({
+  isOpen: false,
+})
 let chatSocket: WebSocket
 onMounted(async () => {
   await initSocket()
   await fetchChatMessages()
+  const element = document.querySelector('#AppContainer')
+  if (element) {
+    element.scrollTo({ top: element.scrollHeight, behavior: 'instant' })
+  }
 })
 
 async function fetchChatMessages() {
@@ -77,6 +98,10 @@ async function initSocket() {
       try {
         const newChat = chatSvc.parseSocketMessage(JSON.parse(event.data))
         chatList.value.push(newChat)
+        const element = document.querySelector('#AppContainer')
+        if (element) {
+          element.scrollTo({ top: element.scrollHeight, behavior: 'instant' })
+        }
       } catch (e) {
         console.error(e)
       }
@@ -91,7 +116,7 @@ function adjustInputHeight(e: Event) {
 }
 
 function sendTicket() {
-  uiStore.showToast('테스트 메세지')
+  userSendTicket.value.isOpen = true
 }
 
 function sendMessage() {
@@ -112,5 +137,6 @@ function sendMessage() {
 
 .chat-bubble-list {
   min-height: 100vh;
+  margin-bottom: 92px; /* Adjust based on input height */
 }
 </style>

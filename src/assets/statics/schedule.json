@@ -3,7 +3,7 @@
     {
       "begin": "13:00",
       "end": "15:00",
-      "title": "입학식",
+      "title": "입학",
       "color": "var(--color-bg-primary)"
     },
     {
@@ -20,26 +20,38 @@
     },
     {
       "begin": "19:00",
-      "end": "20:30",
+      "end": "21:00",
       "title": "오리엔테이션",
       "color": "var(--color-bg-primary)"
     },
     {
-      "begin": "20:30",
-      "end": "21:00",
+      "begin": "21:00",
+      "end": "21:30",
       "title": "시상식",
       "color": "var(--color-bg-purple)"
+    },
+    {
+      "begin": "22:00",
+      "end": "22:30",
+      "title": "조별시간",
+      "color": "var(--color-background-3)"
     }
   ],
   "d2": [
     {
       "begin": "07:00",
-      "end": "09:00",
+      "end": "08:00",
       "title": "하루열기",
       "color": "var(--color-background-3)"
     },
     {
-      "begin": "09:00",
+      "begin": "08:00",
+      "end": "08:45",
+      "title": "아침식사",
+      "color": "var(--color-background-3)"
+    },
+    {
+      "begin": "08:45",
       "end": "10:00",
       "title": "디보셔널",
       "color": "var(--color-bg-green)"
@@ -76,7 +88,7 @@
     },
     {
       "begin": "21:00",
-      "end": "23:00",
+      "end": "22:30",
       "title": "축제",
       "color": "var(--color-bg-purple)"
     }
@@ -84,8 +96,14 @@
   "d3": [
     {
       "begin": "07:00",
-      "end": "09:00",
+      "end": "08:00",
       "title": "하루열기",
+      "color": "var(--color-background-3)"
+    },
+    {
+      "begin": "08:00",
+      "end": "09:00",
+      "title": "아침식사",
       "color": "var(--color-background-3)"
     },
     {
@@ -103,7 +121,7 @@
     {
       "begin": "14:00",
       "end": "17:00",
-      "title": "영적 세미나",
+      "title": "고민학개론",
       "color": "var(--color-bg-green)"
     },
     {
@@ -115,21 +133,27 @@
     {
       "begin": "19:00",
       "end": "21:00",
-      "title": "무도회",
+      "title": "모두 무도해",
       "color": "var(--color-bg-amber)"
     },
     {
       "begin": "21:00",
-      "end": "23:00",
+      "end": "22:30",
       "title": "축제",
       "color": "var(--color-bg-purple)"
     }
   ],
   "d4": [
     {
-      "begin": "07:30",
-      "end": "09:30",
+      "begin": "07:00",
+      "end": "08:00",
       "title": "하루열기",
+      "color": "var(--color-background-3)"
+    },
+    {
+      "begin": "08:00",
+      "end": "09:00",
+      "title": "아침식사",
       "color": "var(--color-background-3)"
     },
     {
@@ -140,7 +164,7 @@
     },
     {
       "begin": "11:00",
-      "end": "12:00",
+      "end": "12:30",
       "title": "디보셔널",
       "color": "var(--color-bg-green)"
     }
