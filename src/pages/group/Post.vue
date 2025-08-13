@@ -5,7 +5,13 @@
   <template v-else>
     <section class="post-detail p-4">
       <div class="author mb-4">
-        <div class="profile"></div>
+        <div class="profile">
+          <img
+            :src="postDetail.author.profileImg"
+            alt="Author profile"
+            @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+          />
+        </div>
         <div class="author-info flex-1">
           <h3 class="text-lg font-bold">
             {{ postDetail.author.nickname }}
@@ -103,6 +109,7 @@ import { useAuthStore } from '@/stores/auth.store.ts'
 import Modal from '@/components/feedbacks/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useUiStore } from '@/stores/ui.store.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const props = defineProps<{
   id: string

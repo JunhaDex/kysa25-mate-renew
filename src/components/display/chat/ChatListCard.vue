@@ -1,7 +1,13 @@
 <template>
   <div class="s-card">
     <div class="chat-list-item" @click="moveToChatRoom">
-      <div class="user-profile"></div>
+      <div class="user-profile">
+        <img
+          :src="other?.profileImg"
+          @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+          alt="User Profile"
+        />
+      </div>
       <div class="sender-info flex-1">
         <div class="name-time">
           <h3 class="font-bold flex-1">{{ room.title }}</h3>
@@ -23,12 +29,16 @@ import { computed } from 'vue'
 import { timeToStr } from '@/utils/use.util.ts'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const props = defineProps<{
   room: ChatRoom
 }>()
+const other = computed(() => {
+  return props.room.party.find((m) => m.id !== authStore.myInfo?.id)
+})
 const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
 const hasUnread = computed<boolean>(() => {
   const isNotMe = props.room.lastChat.sender !== authStore.myInfo?.id
@@ -78,5 +88,11 @@ function moveToChatRoom() {
   width: 48px;
   height: 48px;
   aspect-ratio: 1;
+  overflow: hidden;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

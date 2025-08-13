@@ -1,6 +1,12 @@
 <template>
   <div class="chat-bubble-wrap" :class="type === 'receive' ? 'chat-receive' : 'chat-send'">
-    <div v-if="type === 'receive'" class="sender-profile"></div>
+    <div v-if="type === 'receive'" class="sender-profile">
+      <img
+        :src="sender.profileImg"
+        alt="sender"
+        @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+      />
+    </div>
     <div class="max-w-[65%]">
       <h3 v-if="type === 'receive'" class="text-sm font-bold text-shadow-tx-gray-1 pl-2 mb-2">
         {{ sender?.nickname }}
@@ -76,6 +82,7 @@ import type { UserProfile } from '@/types/friend.type.ts'
 import { computed, ref } from 'vue'
 import dayjs from 'dayjs'
 import { ChatService } from '@/services/chat.service.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const chatSvc = new ChatService()
 const props = defineProps<{
@@ -144,6 +151,13 @@ async function replyTicket() {
   width: 36px;
   height: 36px;
   aspect-ratio: 1;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .chat-bubble-wrap {

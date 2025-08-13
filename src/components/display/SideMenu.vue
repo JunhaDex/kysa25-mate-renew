@@ -8,7 +8,11 @@
       </div>
       <div v-if="authStore.myInfo" class="menu-user-profile">
         <div class="profile-image">
-          <img :src="authStore.myInfo.profileImg" alt="user-profile" />
+          <img
+            :src="authStore.myInfo.profileImg"
+            alt="user-profile"
+            @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+          />
         </div>
         <div class="profile-info">
           <h3 class="text-lg font-bold">
@@ -74,6 +78,7 @@ import { useRouter } from 'vue-router'
 import { sleep } from '@/utils/use.util.ts'
 import { AuthService } from '@/services/auth.service.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const props = defineProps<{
   isOpen: boolean

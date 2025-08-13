@@ -1,7 +1,13 @@
 <template>
   <div class="post-reply">
     <div class="author mb-2">
-      <div class="profile"></div>
+      <div class="profile">
+        <img
+          :src="reply.author.profileImg"
+          alt="author"
+          @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+        />
+      </div>
       <div class="author-info flex-1">
         <h3 class="text-sm font-bold">{{ reply.author.nickname }}</h3>
         <p class="text-tx-gray-3 text-xs">1조</p>
@@ -27,6 +33,7 @@ import { timeToStr } from '@/utils/use.util.ts'
 import { useAuthStore } from '@/stores/auth.store.ts'
 import { PostService } from '@/services/post.service.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const postSvc = new PostService()
 const authStore = useAuthStore()

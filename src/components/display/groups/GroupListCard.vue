@@ -42,6 +42,11 @@ const router = useRouter()
   height: 96px;
   aspect-ratio: 1;
   overflow: hidden;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .group-stats {

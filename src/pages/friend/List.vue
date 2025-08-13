@@ -10,7 +10,7 @@
   <section class="section-list bg-background-2 p-4">
     <template v-for="(friends, team) in groupByTeam" :key="team">
       <h2 class="text-lg font-semibold mb-2">{{ team }}</h2>
-      <FriendListCard :list="friends" @select-friend="selectFriend" />
+      <FriendListCard :list="friends" @select-friend="selectFriend" class="mb-4" />
     </template>
     <SkeletonFactory
       v-if="hasMore && onLoad"
@@ -27,7 +27,12 @@
   <Modal :is-open="friendInfo.isOpen" @close-modal="friendInfo.isOpen = false">
     <div class="s-modal py-4">
       <div v-if="friendInfo.friend" class="user-profile mb-4">
-        <div class="profile"></div>
+        <div class="profile">
+          <img
+            :src="friendInfo.friend.profileImg"
+            @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+          />
+        </div>
         <div class="flow-sign font-mono mt-4 mb-2">
           <span class="sign-content">
             KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE APP KYSA2025 MATE
@@ -39,11 +44,18 @@
           </span>
         </div>
         <h2 class="text-2xl font-semibold">{{ friendInfo.friend.nickname }}</h2>
-        <div class="text-tx-gray-3 text-sm font-semibold mb-2">1조</div>
-        <p class="introduce">자기소개</p>
+        <div class="text-tx-gray-2 text-sm font-semibold mb-2">
+          {{ friendInfo.friend.team.teamName }}
+        </div>
+        <p class="introduce" :class="{ 'text-tx-gray-3': !friendInfo.friend.introduce }">
+          {{ friendInfo.friend.introduce || '등록된 상태 메세지가 없습니다.' }}
+        </p>
       </div>
       <div class="flex justify-between items-center gap-2 px-4">
-        <button class="s-btn btn-primary w-full block" @click="getChatRoom">메세지 보내기</button>
+        <button class="s-btn btn-primary w-full block" @click="getChatRoom" :disabled="isLocked">
+          <span v-if="isLocked" class="icon icon-loading" />
+          <span v-else>메세지 보내기</span>
+        </button>
         <button
           class="s-btn btn-secondary w-full block"
           @click="router.push(`/friend/${friendInfo.friend?.ref}`)"
@@ -69,11 +81,14 @@ import { useDebounceFn } from '@vueuse/core'
 import Modal from '@/components/feedbacks/Modal.vue'
 import { useRouter } from 'vue-router'
 import { ChatService } from '@/services/chat.service.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
+import { useLockHandler } from '@/compositions/process.comp.ts'
 
 const router = useRouter()
 const friendSvc = new FriendService()
 const chatSvc = new ChatService()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
+const { isLocked, lockProcess } = useLockHandler()
 const friendList = ref<Friend[]>([])
 const searchWord = ref<string>('')
 const friendInfo = ref<{
@@ -142,7 +157,10 @@ async function selectFriend(friend: Friend) {
 
 async function getChatRoom() {
   if (friendInfo.value.friend) {
-    const roomRef = await chatSvc.getChatRoomRef(friendInfo.value.friend.ref)
+    let roomRef
+    await lockProcess(async () => {
+      roomRef = await chatSvc.getChatRoomRef(friendInfo.value.friend!.ref)
+    })
     if (roomRef) {
       router.push(`/chat/${roomRef}`)
     }
@@ -163,6 +181,12 @@ async function getChatRoom() {
     background-color: var(--color-background-3);
     border-radius: 50%;
     margin: 0 auto;
+    overflow: hidden;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
