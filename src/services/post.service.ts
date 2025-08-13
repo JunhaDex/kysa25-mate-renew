@@ -85,7 +85,7 @@ export class PostService extends ApiService {
     const res = await this.setAuth().get(`/${id}/reply`, {
       params: {
         page: options?.page?.page,
-        size: options?.page?.size || 10,
+        size: options?.page?.size || 20,
       },
     })
     const { meta, list } = this.unpackRes(res) as PageResponse<Reply>
@@ -127,7 +127,6 @@ export class PostService extends ApiService {
     }
     if (path) {
       const formData = new FormData()
-      console.log(file)
       formData.append('file', file)
       const res = await this.setAuth().post(`${import.meta.env.VITE_API_URL}${path}`, formData, {
         headers: {

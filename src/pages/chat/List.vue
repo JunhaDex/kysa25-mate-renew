@@ -39,6 +39,7 @@ async function fetchChatList() {
 }
 
 async function fetchNext() {
+  if (!hasMore.value || onLoad.value) return
   const list = await fetchListData(
     chatSvc.listChats({
       page: {

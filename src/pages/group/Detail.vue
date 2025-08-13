@@ -1,5 +1,6 @@
 <template>
   <Header :has-back="true" title="동아리 상세" />
+  <div class="s-progress" :class="{ hidden: isReady }"></div>
   <template v-if="groupDetail === undefined"></template>
   <template v-else>
     <section class="group-header">
@@ -55,6 +56,7 @@ import { PostService } from '@/services/post.service.ts'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import { useRouter } from 'vue-router'
 import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
+import { useLoadHandler } from '@/compositions/loading.comp.ts'
 
 const props = defineProps<{
   id: string
@@ -63,6 +65,7 @@ const groupSvc = new GroupService()
 const postSvc = new PostService()
 const router = useRouter()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
+const { isReady, setReady } = useLoadHandler()
 const groupDetail = ref<Group>()
 const postList = ref<Post[]>([])
 const isExpandBtn = ref(true)
@@ -74,6 +77,7 @@ onMounted(async () => {
   if (scrollContainer) {
     scrollContainer.addEventListener('scroll', handleScroll)
   }
+  setReady()
 })
 onBeforeUnmount(async () => {
   if (scrollContainer) {
@@ -103,12 +107,15 @@ async function fetchGroupDetail() {
 }
 
 async function fetchNext() {
-  const list = await fetchListData(postSvc.getGroupPosts(props.id, {
-    page: {
-      page: pageInfo.value.pageNo + 1,
-      size: pageInfo.value.pageSize,
-    },
-  }))
+  if (!hasMore.value || onLoad.value) return
+  const list = await fetchListData(
+    postSvc.getGroupPosts(props.id, {
+      page: {
+        page: pageInfo.value.pageNo + 1,
+        size: pageInfo.value.pageSize,
+      },
+    }),
+  )
   postList.value.push(...list)
 }
 </script>

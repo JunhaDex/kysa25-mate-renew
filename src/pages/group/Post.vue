@@ -1,5 +1,6 @@
 <template>
   <Header :has-back="true" title="게시글 상세" />
+  <div class="s-progress" :class="{ hidden: isReady }"></div>
   <template v-if="postDetail === undefined"></template>
   <template v-else>
     <section class="post-detail p-4">
@@ -12,7 +13,13 @@
           </h3>
           <p class="text-tx-gray-3 text-sm">{{ timeStr }}</p>
         </div>
-        <span class="text-xs text-tx-gray-3 font-medium underline">삭제하기</span>
+        <span
+          v-if="isMine"
+          class="text-xs text-tx-red font-medium underline cursor-pointer select-none"
+          @click="isOpenDelete = true"
+        >
+          삭제하기
+        </span>
       </div>
       <div class="content mb-4">
         <div v-if="postDetail.image" class="post-image mb-2">
@@ -37,7 +44,14 @@
     </section>
     <div class="bg-background-2 h-[1rem]"></div>
     <section class="post-reply-wrap px-4 pt-4">
-      <PostReply v-for="reply in replyList" :key="reply.id" class="mb-4" :reply="reply" />
+      <PostReply
+        v-for="reply in replyList"
+        :key="reply.id"
+        class="mb-4"
+        :reply="reply"
+        :post-id="Number(props.id)"
+        @remove="removeReply"
+      />
       <div v-if="!onLoad && replyList.length === 0" class="no-result">
         <span>첫번째 댓글을 남기세요!</span>
       </div>
@@ -56,38 +70,68 @@
           @input="adjustInputHeight"
         />
       </div>
-      <button class="s-btn btn-primary" @click="submitReply">댓글작성</button>
+      <button class="s-btn btn-primary" @click="submitReply" :disabled="isLocked">
+        <span v-if="isLocked" class="icon icon-loading" />
+        <span v-else>댓글작성</span>
+      </button>
     </div>
   </div>
+  <Modal :is-open="isOpenDelete" @close-modal="isOpenDelete = false">
+    <div class="s-modal p-4">
+      <h2 class="text-lg font-semibold mb-2">게시글 삭제</h2>
+      <p>정말로 이 게시글을 삭제하시겠습니까? 삭제된 게시글은 복구할 수 없습니다.</p>
+      <div class="flex justify-between gap-4 mt-4">
+        <button class="s-btn btn-secondary w-full block" @click="isOpenDelete = false">취소</button>
+        <button class="s-btn btn-red w-full block" @click="deletePost">삭제</button>
+      </div>
+    </div>
+  </Modal>
 </template>
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
 import { computed, onMounted, ref } from 'vue'
 import { PostService } from '@/services/post.service.ts'
 import type { Post, Reply } from '@/types/group.type.ts'
-import { timeToStr } from '@/utils/use.util.ts'
+import { sleep, timeToStr } from '@/utils/use.util.ts'
 import { Heart, MessageCircleMore } from 'lucide-vue-next'
 import { usePagination } from '@/compositions/pages.comp.ts'
 import PostReply from '@/components/display/groups/PostReply.vue'
 import { useLockHandler } from '@/compositions/process.comp.ts'
 import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
+import { useLoadHandler } from '@/compositions/loading.comp.ts'
+import { useAuthStore } from '@/stores/auth.store.ts'
+import Modal from '@/components/feedbacks/Modal.vue'
+import { useRouter } from 'vue-router'
+import { useUiStore } from '@/stores/ui.store.ts'
 
 const props = defineProps<{
   id: string
 }>()
 const postSvc = new PostService()
+const authStore = useAuthStore()
+const uiStore = useUiStore()
+const router = useRouter()
 const { isLocked, lockProcess } = useLockHandler()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
+const { isReady, setReady } = useLoadHandler()
 const postDetail = ref<Post>()
 const replyList = ref<Reply[]>([])
 const userInputReply = ref('')
+const isOpenDelete = ref(false)
 const likeState = ref<{ count: number; isLiked: boolean }>({
   count: postDetail.value?.likes || 0,
   isLiked: !!postDetail.value?.isLiked,
 })
 const timeStr = computed(() => timeToStr(postDetail.value?.createdAt || ''))
+const isMine = computed(() => {
+  if (postDetail.value) {
+    return postDetail.value.author.ref === authStore.myInfo?.ref
+  }
+  return false
+})
 onMounted(async () => {
   await fetchPostDetail()
+  setReady()
 })
 
 async function fetchPostDetail() {
@@ -98,10 +142,13 @@ async function fetchPostDetail() {
 }
 
 async function fetchReplyList() {
-  replyList.value = await fetchListData(postSvc.getPostReply(Number(props.id)))
+  const replyPage = await postSvc.getPostReply(Number(props.id))
+  pageInfo.value = replyPage.meta
+  replyList.value = replyPage.list
 }
 
 async function fetchNext() {
+  if (!hasMore.value || onLoad.value) return
   const list = await fetchListData(
     postSvc.getPostReply(Number(props.id), {
       page: {
@@ -136,6 +183,22 @@ async function submitReply() {
     userInputReply.value = ''
   })
   await fetchReplyList()
+}
+
+async function deletePost() {
+  if (!isMine.value) return
+  await postSvc.deletePost(Number(props.id))
+  isOpenDelete.value = false
+  await sleep(0)
+  router.back()
+  uiStore.showToast('게시글이 삭제되었습니다.', 'success')
+}
+
+async function removeReply(reply: Reply) {
+  const index = replyList.value.findIndex((r) => r.id === reply.id)
+  if (index !== -1) {
+    replyList.value.splice(index, 1)
+  }
 }
 </script>
 <style scoped>

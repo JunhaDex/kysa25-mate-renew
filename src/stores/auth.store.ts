@@ -12,12 +12,14 @@ export const useAuthStore = defineStore(
     })
     const token = ref<string>('')
     const fcm = ref<string>('')
+    const device = ref<string>('')
     const myInfo = ref<Friend>()
     const ticket = ref<number>(0)
     return {
       ui,
       token,
       fcm,
+      device,
       myInfo,
       ticket,
     }

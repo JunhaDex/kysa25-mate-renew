@@ -114,6 +114,7 @@ async function fetchFriendList() {
 }
 
 async function fetchNext() {
+  if (!hasMore.value || onLoad.value) return
   const list = await fetchListData(
     friendSvc.listFriends({
       page: {

@@ -70,6 +70,12 @@ main {
   }
 }
 
+@keyframes indeterminate {
+  0%   { left:-30%; width:14%; }
+  50%  {            width:46%; }
+  100% { left:100%; width:14%; }
+}
+
 .action-icon {
   display: flex;
   align-items: center;
@@ -105,3 +111,22 @@ main {
   width: 24px;
   height: 24px;
 }
+
+.s-progress {
+  height: 4px;
+  width: 100%;
+  background: var(--color-background-3);
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    background: var(--color-tx-primary);
+    animation: indeterminate 1.2s ease-in-out infinite;
+    will-change: width, left;
+  }
+}
+
+

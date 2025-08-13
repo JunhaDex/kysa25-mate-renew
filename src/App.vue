@@ -24,6 +24,7 @@ onMounted(async () => {
     const fcm = await firebase.getUserToken()
     if(fcm) {
       authStore.fcm = fcm
+      authStore.device = navigator.userAgent
       firebase.setupMessageListener(() => {
         uiStore.showToast('새로운 메시지가 도착했습니다.', 'message')
       })

@@ -1,7 +1,9 @@
 <template>
   <Header :has-back="true" :title="chatRoom.title" />
-  <section class="chat-bubble-list bg-background-2 p-4">
+  <div class="s-progress" :class="{ hidden: isReady }"></div>
+  <section class="chat-bubble-list bg-background-2">
     <template v-if="chatRoom && users">
+      <ScrollObserver @load-more="fetchNext" />
       <ChatBubble
         v-for="chat in chatList"
         :key="chat.id"
@@ -47,6 +49,8 @@ import { usePagination } from '@/compositions/pages.comp.ts'
 import type { Friend, UserProfile } from '@/types/friend.type.ts'
 import { useRouter } from 'vue-router'
 import SendTicketModal from '@/components/feedbacks/chat/SendTicketModal.vue'
+import { useLoadHandler } from '@/compositions/loading.comp.ts'
+import ScrollObserver from '@/components/layouts/ScrollObserver.vue'
 
 const router = useRouter()
 const props = defineProps<{
@@ -55,6 +59,7 @@ const props = defineProps<{
 const chatSvc = new ChatService()
 const uiStore = useUiStore()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()
+const { isReady, setReady } = useLoadHandler()
 const chatList = ref<Chat[]>([])
 const chatRoom = ref<ChatRoom>((router.currentRoute.value.meta?.recipient as ChatRoom) ?? undefined)
 const users = ref<UserProfile[]>([])
@@ -75,6 +80,8 @@ onMounted(async () => {
   if (element) {
     element.scrollTo({ top: element.scrollHeight, behavior: 'instant' })
   }
+  setReady()
+  await chatSvc.markAsRead(props.id)
 })
 
 async function fetchChatMessages() {
@@ -82,6 +89,20 @@ async function fetchChatMessages() {
   chatRoom.value = info.room
   users.value = info.users
   chatList.value = await fetchListData(chatSvc.getChatRoom(props.id))
+}
+
+async function fetchNext() {
+  if (!hasMore.value || onLoad.value) return
+  const list = await fetchListData(
+    chatSvc.getChatRoom(props.id, {
+      page: {
+        page: pageInfo.value.pageNo + 1,
+        size: pageInfo.value.pageSize,
+      },
+      anchor: chatList.value[0].id,
+    }),
+  )
+  chatList.value.unshift(...list)
 }
 
 async function initSocket() {
@@ -137,7 +158,7 @@ function sendMessage() {
 }
 
 .chat-bubble-list {
-  min-height: 100vh;
-  margin-bottom: 92px; /* Adjust based on input height */
+  min-height: calc(100vh - 92px);
+  padding: 1rem 1rem 92px 1rem;
 }
 </style>

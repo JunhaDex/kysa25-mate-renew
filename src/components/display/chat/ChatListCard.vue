@@ -4,8 +4,11 @@
       <div class="user-profile"></div>
       <div class="sender-info flex-1">
         <div class="name-time">
-          <h3 class="font-bold">{{ room.title }}</h3>
-          <span class="text-xs text-shadow-tx-gray-3">{{ tts }}</span>
+          <h3 class="font-bold flex-1">{{ room.title }}</h3>
+          <div>
+            <span class="text-xs text-shadow-tx-gray-3">{{ tts }}</span>
+            <span v-if="hasUnread" class="new-dot ml-2"></span>
+          </div>
         </div>
         <div class="message-preview">
           <p class="text-sm text-shadow-tx-gray-2">{{ preview }}</p>
@@ -19,16 +22,23 @@ import type { ChatRoom } from '@/types/chat.type.ts'
 import { computed } from 'vue'
 import { timeToStr } from '@/utils/use.util.ts'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.store.ts'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const props = defineProps<{
   room: ChatRoom
 }>()
 const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
+const hasUnread = computed<boolean>(() => {
+  const isNotMe = props.room.lastChat.sender !== authStore.myInfo?.id
+  const hasUnread = props.room.lastChat.id > props.room.lastRead
+  console.log(`lastChat: ${props.room.lastChat.id}, lastRead: ${props.room.lastRead}`)
+  console.log(`hasUnread: ${hasUnread}, isNotMe: ${isNotMe}`)
+  return isNotMe && hasUnread
+})
 const preview = computed(() => {
-  const enc = props.room.lastChat.encoded
-    ? '메세지가 도착했습니다.'
-    : props.room.lastChat.message
+  const enc = props.room.lastChat.encoded ? '메세지가 도착했습니다.' : props.room.lastChat.message
   if (enc.length > 12) {
     return enc.slice(0, 12) + '...'
   }
@@ -44,6 +54,14 @@ function moveToChatRoom() {
 }
 </script>
 <style scoped>
+.new-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-tx-red);
+  border-radius: 50%;
+}
+
 .chat-list-item {
   display: flex;
   align-items: center;

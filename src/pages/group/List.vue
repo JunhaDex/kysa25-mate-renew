@@ -57,6 +57,7 @@ async function fetchGroupList() {
 }
 
 async function fetchNext() {
+  if (!hasMore.value || onLoad.value) return
   const list = await fetchListData(
     groupSvc.listGroups({
       page: {

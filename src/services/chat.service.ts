@@ -46,8 +46,10 @@ export class ChatService extends ApiService {
     const { meta, list } = this.unpackRes(res) as PageResponse<ChatRoom>
     if (list.length > 0) {
       const roomList = list.map((room: any) => {
+        console.log(room.lastChat)
         const semi = cleanObj<ChatRoom>(room, this.chatRoomKeyMapping)
-        semi.lastChat = cleanObj(room.lastChat, this.chatItemKeyMapping)
+        semi.lastChat = cleanObj<Chat>(room.lastChat, this.chatItemKeyMapping)
+        console.log(semi.lastChat)
         semi.party = room.party.map((user: any) => {
           return cleanObj(user, this.chatUserKeyMapping)
         })
@@ -66,8 +68,17 @@ export class ChatService extends ApiService {
     return this.emptyPage as PageResponse<ChatRoom>
   }
 
-  async getChatRoom(chatRoomId: string): Promise<PageResponse<Chat>> {
-    const res = await this.setAuth().get(`/history/${chatRoomId}`)
+  async getChatRoom(
+    chatRoomId: string,
+    options?: { page?: PageRequest; anchor?: number },
+  ): Promise<PageResponse<Chat>> {
+    const res = await this.setAuth().get(`/history/${chatRoomId}`, {
+      params: {
+        page: options?.page?.page,
+        size: 20,
+        'begin-id': options?.anchor,
+      },
+    })
     const { meta, list } = this.unpackRes(res) as PageResponse<Chat>
     if (list.length > 0) {
       return {
@@ -118,18 +129,36 @@ export class ChatService extends ApiService {
     return upk.ref
   }
 
-  async sendMessage() {}
-
   async sendTicket(recipientRef: string, parentChatId?: number) {
     const params = parentChatId ? { originId: parentChatId } : {}
     await this.setAuth().post(`/ticket/${recipientRef}`, {}, { params })
   }
 
-  async markAsRead(chatRoomId: string): Promise<void> {}
+  async markAsRead(roomRef: string): Promise<void> {
+    await this.setAuth().put(`read/${roomRef}`)
+  }
 
   async countTicketRemain(): Promise<number> {
     const res = await this.setAuth().get('ticket/count')
     const raw = this.unpackRes(res) as { count: number }
     return raw.count
+  }
+
+  async authPostmanAccess(key: string): Promise<boolean> {
+    try {
+      await this.setAuth().post('postman/auth', { passKey: key })
+      return true
+    } catch (e) {
+      console.error(e)
+      return false
+    }
+  }
+
+  async sendPostmanAlert(refs: string[], key: string): Promise<void> {
+    const payload = {
+      refs,
+      passKey: key,
+    }
+    await this.setAuth().post('postman/send', payload)
   }
 }

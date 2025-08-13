@@ -21,15 +21,14 @@ export class AuthService extends ApiService {
     super('auth')
   }
 
-  async login(params: {
-    id: string
-    pwd: string
-    fcm?: {
-      token: string
-      device: string
-    }
-  }): Promise<void> {
-    const res = await this.setAuth().post('/login', { ...params })
+  async login(params: { id: string; pwd: string }): Promise<void> {
+    const fcmPayload = this.authStore.fcm
+      ? {
+          token: this.authStore.fcm,
+          device: this.authStore.device,
+        }
+      : undefined
+    const res = await this.setAuth().post('/login', { ...params, fcm: fcmPayload })
     const auth = this.unpackRes(res) as AuthLogin
     this.authStore.token = auth.accessToken
     await this.getMyInfo()

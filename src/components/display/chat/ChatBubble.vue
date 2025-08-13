@@ -43,10 +43,16 @@
         <div v-else-if="encoded.type === 'postman'">
           <div class="chat-bubble" :class="type === 'receive' ? 'bubble-left' : 'bubble-right'">
             <div class="text-sm text-shadow-tx-gray-2">
-              <p>
-                <b>{{ encoded.to.nickname }} 님</b>, 편지가 도착했습니다.<br />
-                운영본부에서 수령해 주시기 바랍니다.
+              <p class="font-semibold mb-2">[연애편지 도착 안내]</p>
+              <p class="mb-2">
+                <b>{{ encoded.to.nickname }} 님</b>, 누군가 당신에게 편지를 보냈어요!<br />
+                연애편지부스 (11호관 1층 로비)에 방문하셔서 성함을 확인하고 찾아가시기 비랍니다. 🙂
               </p>
+              <ul>
+                <li>※ 수령 여부는 보내신 분에게는 알리지 않습니다.</li>
+                <li>※ 8/16(토) 밤까지 찾아가지 않으신 편지는 추후 전달이 어렵습니다.</li>
+              </ul>
+
             </div>
           </div>
         </div>
@@ -88,7 +94,11 @@ const sender = computed<UserProfile>(() => {
 const replied = ref<boolean>(parseReplied())
 const encoded = computed(() => {
   if (props.chat.encoded) {
-    return JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
+    if (props.chat.message.startsWith(':::type__express_ticket:::')) {
+      return JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
+    } else if (props.chat.message.startsWith(':::type__postman_alert:::')) {
+      return JSON.parse(props.chat.message.replace(/^:::type__postman_alert:::/, ''))
+    }
   }
   return props.chat.message
 })
@@ -108,7 +118,12 @@ const tts = computed(() => {
 
 function parseReplied(): boolean {
   if (props.chat.encoded) {
-    const msg = JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
+    let msg: any
+    if (props.chat.message.startsWith(':::type__express_ticket:::')) {
+      msg = JSON.parse(props.chat.message.replace(/^:::type__express_ticket:::/, ''))
+    } else if (props.chat.message.startsWith(':::type__postman_alert:::')) {
+      msg = JSON.parse(props.chat.message.replace(/^:::type__postman_alert:::/, ''))
+    }
     return msg.replied
   }
   return false
