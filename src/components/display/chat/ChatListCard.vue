@@ -46,11 +46,10 @@ const hasUnread = computed<boolean>(() => {
   return isNotMe && hasUnread
 })
 const preview = computed(() => {
-  const enc = props.room.lastChat.encoded ? '메세지가 도착했습니다.' : props.room.lastChat.message
-  if (enc.length > 12) {
-    return enc.slice(0, 12) + '...'
+  if (props.room.lastChat.id) {
+    return props.room.lastChat.encoded ? '메세지가 도착했습니다.' : props.room.lastChat.message
   }
-  return enc
+  return '아직 대화가 없습니다.'
 })
 
 function moveToChatRoom() {
@@ -74,6 +73,16 @@ function moveToChatRoom() {
   display: flex;
   align-items: center;
   gap: 1rem;
+
+  & .message-preview {
+    p {
+      width: 100%;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 .name-time {

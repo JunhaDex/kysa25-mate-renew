@@ -7,7 +7,7 @@
       <div class="group-info flex-1">
         <div class="group-title">
           <h3 class="text-lg font-bold">{{ group.groupName }}</h3>
-          <p class="text-tx-gray-3 text-wrap">{{ group.introduce }}</p>
+          <p class="text-tx-gray-2 text-wrap text-sm">{{ group.introduce }}</p>
         </div>
         <div class="group-stats text-border-active mt-2">
           <Users :size="14" />
