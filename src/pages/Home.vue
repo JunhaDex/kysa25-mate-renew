@@ -29,10 +29,13 @@
             <span class="text-sm font-semibold text-nowrap">동아리방</span>
           </div>
         </router-link>
-        <a href="#">
+        <a
+          href="https://early-ton-133.notion.site/2025-KYSA-24cd9c5d4423801a90c8cea1d08d5393?source=copy_link"
+          target="_blank"
+        >
           <div class="tray-item" @click="scrollToMap">
-            <Map :size="36" />
-            <span class="text-sm font-semibold text-nowrap">대회지도</span>
+            <FerrisWheel :size="36" />
+            <span class="text-sm font-semibold text-nowrap">프로그램</span>
           </div>
         </a>
         <a href="https://linktr.ee/hminje" target="_blank">
@@ -178,7 +181,7 @@
 import Header from '@/components/layouts/Header.vue'
 import Footer from '@/components/layouts/Footer.vue'
 import { computed, ref } from 'vue'
-import { CalendarDays, Blocks, BadgeInfo, Map, MousePointerClick } from 'lucide-vue-next'
+import { CalendarDays, Blocks, BadgeInfo, MousePointerClick, FerrisWheel } from 'lucide-vue-next'
 import dayjs from 'dayjs'
 import scheduleData from '@/assets/statics/schedule.json'
 import WelcomeDrop from '@/components/display/WelcomeDrop.vue'
