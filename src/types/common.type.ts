@@ -35,3 +35,17 @@ export interface ToastMessage {
 }
 
 export type SkeletonUIType = 'list-card'
+
+export interface Notification {
+  id: number
+  target: number
+  type: {
+    category: string
+    sub: string
+  }
+  payload: any
+  message: string
+  title: string
+  readAt: string | null
+  createdAt: string
+}

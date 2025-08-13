@@ -9,7 +9,7 @@
     </div>
     <div class="header-right">
       <template v-if="hasAuth">
-        <Bell :size="24" />
+        <Bell :size="24" @click="router.push('/alert')" />
         <Menu :size="24" @click="() => (isMenuOpen = true)" />
       </template>
       <template v-else>

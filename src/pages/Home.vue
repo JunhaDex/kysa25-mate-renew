@@ -203,7 +203,6 @@ const timetable = ref<{
 const timeDiff = computed<number>(() => {
   const start = dayjs(timetable.value.timeframe.start, 'HH:mm')
   const end = dayjs(timetable.value.timeframe.end, 'HH:mm')
-  console.log(start, end)
   return end.diff(start, 'hour') + 1
 })
 const eventList = computed<

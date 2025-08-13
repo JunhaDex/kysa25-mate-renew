@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/alert',
+      name: 'alert',
+      component: () => import('@/pages/Alert.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/pages/Login.vue'),
@@ -102,6 +107,14 @@ const router = createRouter({
       redirect: { name: 'not-found' },
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const container = document.getElementById('AppContainer')
+  if (container) {
+    container.classList.remove('no-scroll')
+  }
+  next()
 })
 
 export default router

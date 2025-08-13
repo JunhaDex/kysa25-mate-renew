@@ -127,7 +127,6 @@ async function fetchNext() {
 }
 
 const debounceSearch = useDebounceFn(async () => {
-  console.log('search: ', searchWord.value)
   await fetchFriendList()
 }, 300)
 

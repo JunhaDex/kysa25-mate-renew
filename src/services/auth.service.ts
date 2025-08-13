@@ -49,6 +49,10 @@ export class AuthService extends ApiService {
     await this.setAuth().patch(`${import.meta.env.VITE_API_URL}/user/my/${ref}`, params)
   }
 
+  async updateMyExtraInfo(ref: string, params: any) {
+    await this.setAuth().patch(`${import.meta.env.VITE_API_URL}/user/my/extra/${ref}`, params)
+  }
+
   async getMyInfo(): Promise<void> {
     const my = await this.setAuth().get('/my')
     const user = this.unpackRes(my) as any
@@ -58,5 +62,9 @@ export class AuthService extends ApiService {
       teamName: user.teamName,
     }
     this.authStore.myInfo = info
+  }
+
+  async updateMyPass(ref: string, params: { oldPwd: string; newPwd: string }): Promise<void> {
+    await this.setAuth().put(`${import.meta.env.VITE_API_URL}/user/my/${ref}/pwd`, params)
   }
 }

@@ -40,11 +40,11 @@
       </div>
     </div>
     <div class="s-input-wrap mb-4">
-      <label class="label title" for="currentPassword">새 비밀번호</label>
+      <label class="label title" for="newPassword">새 비밀번호</label>
       <div class="s-input-box">
         <input
           v-model="userInput.password.new"
-          id="currentPassword"
+          id="newPassword"
           type="password"
           class="s-input-field"
           placeholder="새 비밀번호를 입력하세요."
@@ -52,11 +52,11 @@
       </div>
     </div>
     <div class="s-input-wrap mb-6">
-      <label class="label title" for="currentPassword">비밀번호 확인</label>
+      <label class="label title" for="confirmPassword">비밀번호 확인</label>
       <div class="s-input-box">
         <input
           v-model="userInput.password.confirm"
-          id="currentPassword"
+          id="confirmPassword"
           type="password"
           class="s-input-field"
           placeholder="비밀번호를 다시 입력하세요."
@@ -64,7 +64,9 @@
       </div>
     </div>
 
-    <button class="s-btn btn-primary w-full block">비밀번호 변경</button>
+    <button class="s-btn btn-primary w-full block" :disabled="isLocked" @click="updatePassword">
+      비밀번호 변경
+    </button>
   </div>
   <div class="bg-background-2 h-[1rem]"></div>
   <div class="introduce p-4">
@@ -112,7 +114,10 @@
     </div>
   </div>
   <div class="cta-wrap">
-    <button class="s-btn btn-primary w-full block" @click="editUserProfile">수정하기</button>
+    <button class="s-btn btn-primary w-full block" @click="editUserProfile" :disabled="isLocked">
+      <span v-if="isLocked" class="icon icon-loading" />
+      <span v-else>수정하기</span>
+    </button>
   </div>
 </template>
 <script setup lang="ts">
@@ -127,9 +132,13 @@ import { AuthService } from '@/services/auth.service.ts'
 import { PostService } from '@/services/post.service.ts'
 import { USER_EXTRA_LIST } from '@/constants/extra.constant.ts'
 import { FriendService } from '@/services/friend.service.ts'
+import { useLockHandler } from '@/compositions/process.comp.ts'
+import { useUiStore } from '@/stores/ui.store.ts'
 
 const authStore = useAuthStore()
+const uiStore = useUiStore()
 const router = useRouter()
+const { isLocked, lockProcess } = useLockHandler()
 const authSvc = new AuthService()
 const postSvc = new PostService()
 const friendSvc = new FriendService()
@@ -168,6 +177,7 @@ async function fetchMyInfo() {
       value: extra[key],
     })
   }
+  userExtraInput.value = list
   userExtraInput.value.push({ key: '', value: '' })
 }
 
@@ -196,19 +206,63 @@ async function openFileInput() {
   }
 }
 
+function removeProfileDuplicate() {
+  const cleaned = new Map()
+  for (const info of userExtraInput.value) {
+    if (info.key && info.value) {
+      cleaned.set(info.key, info.value)
+    }
+  }
+  return Object.fromEntries(cleaned)
+}
+
+async function updatePassword() {
+  if (
+    userInput.value.password.current === '' ||
+    userInput.value.password.new === '' ||
+    userInput.value.password.confirm === ''
+  ) {
+    uiStore.showToast('모든 비밀번호 필드를 입력해주세요.', 'error')
+    return
+  }
+  if (userInput.value.password.new !== userInput.value.password.confirm) {
+    uiStore.showToast('새 비밀번호가 일치하지 않습니다.', 'error')
+    return
+  }
+  await lockProcess(async () => {
+    await authSvc.updateMyPass(myInfo.value.ref, {
+      oldPwd: userInput.value.password.current,
+      newPwd: userInput.value.password.new,
+    })
+  })
+  userInput.value.password = {
+    current: '',
+    new: '',
+    confirm: '',
+  }
+  uiStore.showToast('비밀번호가 변경되었습니다.', 'success')
+}
+
 async function editUserProfile() {
   let userImageUrl: string | undefined
-  if (userInput.value.profile.image) {
-    const uploaded = await postSvc.uploadImage('user-profile', userInput.value.profile.image, {
-      nickname: myInfo.value.nickname,
+  await lockProcess(async () => {
+    if (userInput.value.profile.image) {
+      const uploaded = await postSvc.uploadImage('user-profile', userInput.value.profile.image, {
+        nickname: myInfo.value.nickname,
+      })
+      userImageUrl = uploaded.location
+    }
+    await authSvc.updateMyInfo(myInfo.value.ref, {
+      profileImg: userImageUrl,
+      introduce: userInput.value.statusMessage,
     })
-    userImageUrl = uploaded.location
-  }
-  await authSvc.updateMyInfo(myInfo.value.ref, {
-    profileImg: userImageUrl,
-    introduce: userInput.value.statusMessage,
+    if (userExtraInput.value.length) {
+      const payload = removeProfileDuplicate()
+      await authSvc.updateMyExtraInfo(myInfo.value.ref, payload)
+    }
   })
   await authSvc.getMyInfo()
+  uiStore.showToast('프로필이 수정되었습니다.', 'success')
 }
 </script>
 <style scoped>

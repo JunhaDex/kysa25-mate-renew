@@ -46,10 +46,8 @@ export class ChatService extends ApiService {
     const { meta, list } = this.unpackRes(res) as PageResponse<ChatRoom>
     if (list.length > 0) {
       const roomList = list.map((room: any) => {
-        console.log(room.lastChat)
         const semi = cleanObj<ChatRoom>(room, this.chatRoomKeyMapping)
         semi.lastChat = cleanObj<Chat>(room.lastChat, this.chatItemKeyMapping)
-        console.log(semi.lastChat)
         semi.party = room.party.map((user: any) => {
           return cleanObj(user, this.chatUserKeyMapping)
         })

@@ -33,8 +33,6 @@ const tts = computed(() => timeToStr(props.room.lastChat.createdAt))
 const hasUnread = computed<boolean>(() => {
   const isNotMe = props.room.lastChat.sender !== authStore.myInfo?.id
   const hasUnread = props.room.lastChat.id > props.room.lastRead
-  console.log(`lastChat: ${props.room.lastChat.id}, lastRead: ${props.room.lastRead}`)
-  console.log(`hasUnread: ${hasUnread}, isNotMe: ${isNotMe}`)
   return isNotMe && hasUnread
 })
 const preview = computed(() => {

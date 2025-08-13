@@ -1,4 +1,4 @@
-export const USER_EXTRA_LIST = {
+export const USER_EXTRA_LIST: Record<string, any> = {
   aka: {
     key: 'aka',
     alias: 'A.K.A',
