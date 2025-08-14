@@ -180,7 +180,7 @@
 <script lang="ts" setup>
 import Header from '@/components/layouts/Header.vue'
 import Footer from '@/components/layouts/Footer.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { CalendarDays, Blocks, BadgeInfo, MousePointerClick, FerrisWheel } from 'lucide-vue-next'
 import dayjs from 'dayjs'
 import scheduleData from '@/assets/statics/schedule.json'

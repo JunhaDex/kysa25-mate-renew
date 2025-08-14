@@ -25,6 +25,7 @@ export interface AuthLogin {
 export interface Mention {
   ref: string
   nickname: string
+  team?: Team
   profileImg?: string
 }
 
@@ -48,4 +49,9 @@ export interface Notification {
   title: string
   readAt: string | null
   createdAt: string
+}
+
+export interface Team {
+  id: number
+  name: string
 }

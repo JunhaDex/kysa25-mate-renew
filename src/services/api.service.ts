@@ -1,9 +1,11 @@
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 import type { PageMeta, PageResponse } from '@/types/common.type.ts'
 import { useAuthStore } from '@/stores/auth.store.ts'
+import { useTeamStore } from '@/stores/team.store.ts'
 
 export default abstract class ApiService {
   protected authStore: any
+  protected teamStore: any
   protected axios: AxiosInstance
   private emptyPageMeta: PageMeta = {
     pageNo: 1,
@@ -18,6 +20,7 @@ export default abstract class ApiService {
 
   constructor(resource: string) {
     this.authStore = useAuthStore()
+    this.teamStore = useTeamStore()
     this.axios = axios.create({
       baseURL: `${import.meta.env.VITE_API_URL}/${resource}`,
       headers: {

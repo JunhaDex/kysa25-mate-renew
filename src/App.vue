@@ -14,15 +14,18 @@ import { useAuthStore } from '@/stores/auth.store.ts'
 import Toast from '@/components/feedbacks/Toast.vue'
 import { FirebaseProvider } from '@/providers/firebase.provider.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
-
+import { FriendService } from '@/services/friend.service.ts'
+import { useTeamStore } from '@/stores/team.store.ts'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
+const teamStore = useTeamStore()
+const friendSvc = new FriendService()
 const firebase = new FirebaseProvider()
 onMounted(async () => {
   try {
     const fcm = await firebase.getUserToken()
-    if(fcm) {
+    if (fcm) {
       authStore.fcm = fcm
       authStore.device = navigator.userAgent
       firebase.setupMessageListener(() => {
@@ -31,6 +34,9 @@ onMounted(async () => {
     }
   } catch (e) {
     console.error(e)
+  }
+  if (teamStore.teamList.length === 0) {
+    teamStore.teamList = await friendSvc.getTeamList()
   }
 })
 </script>

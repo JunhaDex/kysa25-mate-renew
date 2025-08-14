@@ -10,7 +10,7 @@
       </div>
       <div class="author-info flex-1">
         <h3 class="text-sm font-bold">{{ post.author.nickname }}</h3>
-        <p class="text-tx-gray-3 text-xs">1조</p>
+        <p class="text-tx-gray-3 text-xs">{{post.author.team?.name || ''}}</p>
       </div>
       <span class="text-xs text-tx-gray-3 font-medium">{{ timeStr }}</span>
     </div>

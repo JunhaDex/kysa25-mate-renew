@@ -15,7 +15,7 @@
         <div class="author-info flex-1">
           <h3 class="text-lg font-bold">
             {{ postDetail.author.nickname }}
-            <span class="text-tx-gray-3 text-sm font-medium ml-1"> 1조</span>
+            <span class="text-tx-gray-3 text-sm font-medium ml-1">{{ postDetail.author.team?.name || '' }}</span>
           </h3>
           <p class="text-tx-gray-3 text-sm">{{ timeStr }}</p>
         </div>
@@ -110,6 +110,7 @@ import Modal from '@/components/feedbacks/Modal.vue'
 import { useRouter } from 'vue-router'
 import { useUiStore } from '@/stores/ui.store.ts'
 import ProfileDefault from '@/assets/images/profile_empty.png'
+import { useTeamStore } from '@/stores/team.store.ts'
 
 const props = defineProps<{
   id: string
@@ -117,6 +118,7 @@ const props = defineProps<{
 const postSvc = new PostService()
 const authStore = useAuthStore()
 const uiStore = useUiStore()
+const teamStore = useTeamStore()
 const router = useRouter()
 const { isLocked, lockProcess } = useLockHandler()
 const { pageInfo, onLoad, hasMore, fetchListData } = usePagination()

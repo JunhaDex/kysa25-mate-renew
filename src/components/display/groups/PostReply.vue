@@ -10,7 +10,7 @@
       </div>
       <div class="author-info flex-1">
         <h3 class="text-sm font-bold">{{ reply.author.nickname }}</h3>
-        <p class="text-tx-gray-3 text-xs">1조</p>
+        <p class="text-tx-gray-3 text-xs">{{ reply.author.team?.name || '' }}</p>
       </div>
       <span
         v-if="isMine"

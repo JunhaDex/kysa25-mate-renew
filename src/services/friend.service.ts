@@ -1,5 +1,5 @@
 import ApiService from '@/services/api.service.ts'
-import type { KeyMapping, PageRequest, PageResponse } from '@/types/common.type.ts'
+import type { KeyMapping, PageRequest, PageResponse, Team } from '@/types/common.type.ts'
 import type { Friend } from '@/types/friend.type.ts'
 import { cleanObj } from '@/utils/use.util.ts'
 
@@ -15,6 +15,11 @@ export class FriendService extends ApiService {
     nickname: 'nickname',
     profileImg: 'profileImg',
     introduce: 'introduce',
+  }
+
+  private teamKeyMapping: KeyMapping = {
+    id: 'id',
+    teamName: 'name',
   }
 
   constructor() {
@@ -70,5 +75,13 @@ export class FriendService extends ApiService {
       friend,
       extra,
     }
+  }
+
+  async getTeamList() {
+    const res = await this.setAuth().get(`${import.meta.env.VITE_API_URL}/team`)
+    const teams = this.unpackRes(res) as { teamId: string; teamName: string }[]
+    return teams.map((tt: any) => {
+      return cleanObj<Team>(tt, this.teamKeyMapping)
+    })
   }
 }

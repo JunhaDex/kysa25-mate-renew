@@ -46,6 +46,7 @@ export class PostService extends ApiService {
             ref: post.authorRef,
             nickname: post.authorNickname,
             profileImg: post.authorProfileImg,
+            team: this.teamStore.getTeam(post.authorTeamId),
           }
           return semi
         }),
@@ -62,6 +63,7 @@ export class PostService extends ApiService {
       ref: post.authorRef,
       nickname: post.authorNickname,
       profileImg: post.authorProfileImg,
+      team: this.teamStore.getTeam(post.authorTeamId)
     }
     const replyList = comments.list.map((reply: any) => {
       const semi = cleanObj<Reply>(reply, this.replyKeyMapping)
@@ -69,6 +71,7 @@ export class PostService extends ApiService {
         ref: reply.authorRef,
         nickname: reply.authorNickname,
         profileImg: reply.authorProfileImg,
+        team: this.teamStore.getTeam(reply.authorTeamId),
       }
       return semi
     })
@@ -103,6 +106,7 @@ export class PostService extends ApiService {
             ref: reply.authorRef,
             nickname: reply.authorNickname,
             profileImg: reply.authorProfileImg,
+            team: this.teamStore.getTeam(reply.authorTeamId),
           }
           return semi
         }),
