@@ -36,6 +36,7 @@ const router = useRouter()
 }
 
 .group-image {
+  flex-shrink: 0;
   background-color: var(--color-background-2);
   border-radius: 0.5rem;
   width: 96px;
@@ -47,6 +48,10 @@ const router = useRouter()
     width: 100%;
     height: 100%;
   }
+
+  .group-info {
+    min-width: 0;
+  }
 }
 
 .group-stats {
@@ -57,9 +62,9 @@ const router = useRouter()
 
 .text-wrap {
   display: -webkit-box;
+  -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 48px;
 }
 </style>

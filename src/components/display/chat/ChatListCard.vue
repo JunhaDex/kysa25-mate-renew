@@ -75,6 +75,7 @@ function moveToChatRoom() {
   gap: 1rem;
 
   & .message-preview {
+    min-width: 0;
     p {
       width: 100%;
       -webkit-line-clamp: 1;
