@@ -11,6 +11,7 @@ export interface Group {
   isShow: boolean
   priority: number
   posts: Post[]
+  postCount: number
   followers: number
   already?: boolean
 }

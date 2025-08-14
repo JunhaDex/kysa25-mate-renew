@@ -16,12 +16,8 @@
           <p class="text-tx-gray-3 mb-4">{{ groupDetail.introduce }}</p>
           <div class="stats flex items-center gap-2">
             <span class="text-tx-gray-3 font-semibold">
-              <Users :size="16" class="inline-block mr-1" />
-              <span class="text-sm leading-[24px]">회원 {{ groupDetail.followers }}명</span>
-            </span>
-            <span class="text-tx-gray-3 font-semibold">
               <NotepadText :size="16" class="inline-block mr-1" />
-              <span class="text-sm leading-[16px]">게시글 50개</span>
+              <span class="text-sm leading-[16px]">게시글 {{ groupDetail.postCount }}</span>
             </span>
           </div>
         </div>

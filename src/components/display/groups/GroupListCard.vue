@@ -10,15 +10,15 @@
           <p class="text-tx-gray-2 text-wrap text-sm">{{ group.introduce }}</p>
         </div>
         <div class="group-stats text-border-active mt-2">
-          <Users :size="14" />
-          <span class="text-xs">가입자 수: {{ group.followers }}명</span>
+          <NotepadText :size="14" class="inline-block mr-1" />
+          <span class="text-sm leading-[16px]">게시글 {{ group.postCount }}개</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { Users } from 'lucide-vue-next'
+import {NotepadText, Users} from 'lucide-vue-next'
 import type { Group } from '@/types/group.type.ts'
 import { useRouter } from 'vue-router'
 

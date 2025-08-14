@@ -14,6 +14,7 @@ export class GroupService extends ApiService {
     isShow: 'isShow',
     priority: 'priority',
     followers: 'followers',
+    postCount: 'postCount',
   }
 
   constructor() {

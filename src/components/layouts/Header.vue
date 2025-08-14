@@ -17,22 +17,37 @@
       </template>
     </div>
   </header>
+  <div
+    v-if="isShowProfileMsg"
+    class="text-sm font-semibold text-center bg-bg-amber p-2"
+    @click="router.push('/user/profile')"
+  >
+    <u>더 잘 나타내기 위해 여러분의 프로필을 등록해주세요</u> (click)
+  </div>
   <!--Menu-->
   <SideMenu :is-open="isMenuOpen" @close="() => (isMenuOpen = false)" />
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Bell, Menu, ArrowLeft } from 'lucide-vue-next'
 import SideMenu from '@/components/display/SideMenu.vue'
+import { useAuthStore } from '@/stores/auth.store.ts'
 
+const authStore = useAuthStore()
 const props = defineProps<{
   hasBack?: boolean
   title?: string
 }>()
-const hasAuth = ref(true)
 const isMenuOpen = ref(false)
 const router = useRouter()
+const hasAuth = computed(() => authStore.token)
+const isShowProfileMsg = computed(() => {
+  if (authStore.myInfo) {
+    return !authStore.myInfo.profileImg
+  }
+  return false
+})
 </script>
 <style scoped>
 .s-header {

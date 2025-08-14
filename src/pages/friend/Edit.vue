@@ -10,7 +10,11 @@
           accept="image/png, image/jpeg, image/jpg"
           @change="selectImage"
         />
-        <img :src="userInput.profile.preview" alt="user-profile" />
+        <img
+          :src="userInput.profile.preview"
+          alt="user-profile"
+          @error="(e) => ((e.target! as HTMLImageElement).src = ProfileDefault)"
+        />
       </div>
       <span class="upload-icon">
         <UserPen :size="16" color="var(--color-tx-gray-1)" />
@@ -134,6 +138,7 @@ import { USER_EXTRA_LIST } from '@/constants/extra.constant.ts'
 import { FriendService } from '@/services/friend.service.ts'
 import { useLockHandler } from '@/compositions/process.comp.ts'
 import { useUiStore } from '@/stores/ui.store.ts'
+import ProfileDefault from '@/assets/images/profile_empty.png'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()

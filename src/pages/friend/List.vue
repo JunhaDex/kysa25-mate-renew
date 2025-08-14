@@ -117,13 +117,15 @@ onMounted(async () => {
 })
 
 async function fetchFriendList() {
+  const type = defineSearchType(searchWord.value)
   friendList.value = await fetchListData(
     friendSvc.listFriends({
       page: {
         page: pageInfo.value.pageNo,
         size: pageInfo.value.pageSize,
       },
-      name: searchWord.value || undefined,
+      name: type === 'name' && searchWord.value ? searchWord.value : undefined,
+      team: type === 'team' && searchWord.value ? searchWord.value : undefined,
     }),
   )
 }
@@ -164,6 +166,20 @@ async function getChatRoom() {
     if (roomRef) {
       router.push(`/chat/${roomRef}`)
     }
+  }
+}
+
+function defineSearchType(keyword: string): string {
+  if (
+    keyword.includes('팀') ||
+    keyword.includes('운영') ||
+    keyword.includes('집행') ||
+    keyword.includes('준비') ||
+    /^\d+조?$/.test(keyword)
+  ) {
+    return 'team'
+  } else {
+    return 'name'
   }
 }
 </script>
