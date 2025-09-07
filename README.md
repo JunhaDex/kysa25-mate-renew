@@ -1,6 +1,6 @@
 # MATE Frontend
 
-Social media app for KYSA 2025
+SNS App for KYSA 2025
 
 ## 📝 프로젝트의 목적
 
